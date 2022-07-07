@@ -2,7 +2,7 @@
 
 Anul 1:
 - Semestrul 1:
-	- [Structuri Algebrice în Informatică](https://github.com/TeodoraLazaroiu/FMI-Materials/tree/main/Structuri%20Algebrice%20in%20Informatica)
+	- [Structuri Algebrice în Informatică](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Structuri%20Algebrice%20in%20Informatica)
 	- [Calcul Diferențial și Integral](https://github.com/TeodoraLazaroiu/FMI-Materials/tree/main/Calcul%20Diferential%20si%20Integral)
 	- Logică Matematică și Computațională
 	- [Programarea Algoritmilor](https://github.com/TeodoraLazaroiu/FMI-Materials/tree/main/Programarea%20Algoritmilor)
