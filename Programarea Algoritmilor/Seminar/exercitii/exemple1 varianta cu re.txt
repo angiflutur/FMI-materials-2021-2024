@@ -1,0 +1,15 @@
+#1
+#a)
+
+import re
+propozitie="ala,,bala,..porto....,.,.,cala!!!"
+propozitie=re.split("[.,!]+",propozitie)
+print(propozitie)
+#propozitie=sorted(propozitie) creeaza inca un obiect
+propozitie.sort()
+
+propozitie.remove("")
+print(propozitie)
+
+propozitie=" ".join(propozitie)
+print(propozitie)
