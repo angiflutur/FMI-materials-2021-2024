@@ -1,0 +1,6 @@
+--Mariti salariul tuturor angajatilor din tabelul EMP_PNU cu 5%.
+--Vizualizati, iar apoi anula?i modific?rile.
+
+UPDATE emp_ibu SET salary = salary * 1.05;
+SELECT * FROM emp_ibu;
+ROLLBACK;

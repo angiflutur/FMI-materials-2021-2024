@@ -1,0 +1,47 @@
+create table angajati_mpo (cod_ang number(4), nume varchar2(20) NOT NULL, prenume varchar2(20), email char(15), data_ang date, job varchar2(10), 
+cod_sef number(4),  salariu number(8) NOT NULL, cod_dep number(2), Constraint cod_ang_mpo_pk Primary key (cod_ang));
+
+select * from angajati_mpo;
+
+drop table angajati_mpo;
+
+--create database nume; pt proiect-creare baza de date
+--use nume;
+
+--2
+
+insert into angajati_mpo (cod_ang,nume,prenume,email,data_ang,job,cod_sef, salariu,cod_dep) 
+values(100,'Nume1','Prenume1',NULL,NULL, 'Director',null, 20000,10);
+
+insert into angajati_mpo values(101,'Nume2','Prenume2','nume2',NULL, 'inginer',100, 10000,10);
+insert into angajati_mpo  values(102,'Nume3','Prenume3','email',NULL,'it-ist',null, 5000,20);
+insert into angajati_mpo values(103,'Nume4','Prenume4','altemail',NULL, 'Inginer',100, 20000,10);
+insert into angajati_mpo values(104,'Nume5','Prenume5','cevamail', NULL,'Director',101, 1000,10);
+
+delete from angajati_mpo;
+
+select * from angajati_mpo;
+
+
+--3
+
+CREATE TABLE ANGAJATI10_MPO  as select * from angajati_mpo where cod_dep=10;
+
+select * from angajati10_mpo;
+
+--4
+alter table angajati_mpo add (comision number(4,2));
+
+select * from angajati_mpo;
+
+--5
+alter table angajati_mpo modify (salariu number(6,2));
+
+--6
+alter table angajati_mpo modify (salariu number(8) default 2000);
+
+--7
+alter table angajati_mpo modify (comision number(2,2), salariu number(10,2));
+
+--8
+update angajati_mpo set comision=0.1 where lower(job) like 'i%';

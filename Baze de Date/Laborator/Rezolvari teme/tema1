@@ -1,0 +1,53 @@
+
+--20. Folosind subcereri să se modifice cererea de la problema 2 astfel
+încât să afi?eze codul, numele ?i
+--salariul tuturor angaja?ilor care ca?tigă mai mult decât salariul mediu
+pentru job-ul
+--corespunzător ?i lucrează într-un departament cu cel pu?in unul dintre
+angaja?ii al căror
+--nume con?ine litera “t”.
+
+SELECT employee_id, first_name, last_name, salary
+FROM employees 
+WHERE salary > ALL(SELECT AVG(e.salary) from employees e where job_id = e.job_id) 
+        and department_id = any(select department_id from employees 
+where lower(last_name) like '%t%');
+
+22. Scrieţi o cerere pentru a afişa numele, numele departamentului şi salariul angajaţilor
+care nu câştigă comision, dar al căror şef direct coincide cu şeful unui angajat care
+câştigă comision.
+
+SELECT e.last_name, d.department_name, e.salary
+FROM employees e, departments d
+WHERE e.department_id = d.department_id
+AND commission_pct IS NULL
+AND e.manager_id IN (SELECT manager_id
+FROM employees
+WHERE commission_pct IS NOT NULL);
+
+23. Sa se afiseze numele, departamentul, salariul şi job-ul tuturor angajatilor al caror
+salariu si comision coincid cu salariul si comisionul unui angajat din Oxford.
+SELECT e.last_name, d.department_name, e.salary, j.job_title
+FROM employees e, departments d, jobs j
+WHERE e.department_id = d.department_id
+AND e.job_id = j.job_id
+AND (e.salary, NVL(e.commission_pct, 0)) IN
+(SELECT salary, NVL(commission_pct,0)
+FROM employees
+WHERE department_id IN
+(SELECT department_id
+FROM departments
+WHERE location_id IN
+(SELECT location_id
+FROM locations
+WHERE LOWER(city)='oxford')));
+
+24. Să se afişeze numele angajaţilor, codul departamentului şi codul job-ului salariaţilor
+al căror departament se află în Toronto.
+SELECT last_name, job_id, department_id
+FROM employees
+WHERE department_id IN (SELECT department_id
+FROM departments
+WHERE location_id = (SELECT location_id
+FROM locations
+WHERE city = 'Toronto'));

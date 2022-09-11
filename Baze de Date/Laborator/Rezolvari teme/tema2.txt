@@ -1,0 +1,37 @@
+--12.Sa se afiseze codul, numele departamentului si suma salariilor pe departamente. 
+
+SELECT department_id, department_name, sum(salary) suma_salariu 
+
+FROM employees JOIN departments USING (department_id) GROUP BY department_id, department_name; 
+
+/ 
+
+--13. Sa se afiseze maximul salariilor medii pe departamente. 
+
+SELECT  max(avg(salary)) 
+
+FROM employees 
+
+GROUP BY department_id; 
+
+/ 
+ 
+
+--14. Sa se obtina codul, titlul si salariul mediu al job-ului pentru care salariul 
+
+--mediu este 
+
+--minim. 
+
+ 
+SELECT job_id, job_title,avg(salary) 
+
+FROM employees JOIN jobs USING (job_id) 
+
+GROUP BY job_id,job_title 
+
+HAVING avg(salary)<=(SELECT min(avg(salary)) 
+
+FROM employees 
+
+GROUP BY job_id); 

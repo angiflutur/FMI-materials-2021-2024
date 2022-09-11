@@ -1,0 +1,82 @@
+--Exercitiul 1)
+
+--  Sã se afiseze numele departamentelor, titlurile job-urilor si valoarea medie a salariilor, pentru:?
+
+-- –  fiecare departament si, în cadrul sãu pentru fiecare job;?
+
+-- –  fiecare departament (indiferent de job);?
+
+-- –  întreg tabelul
+
+SELECT department_id, job_id, AVG(salary)
+FROM employees
+GROUP BY ROLLUP ( DEPARTMENT_ID, JOB_ID);
+/
+--EXEMPLU LA DECODE
+SELECT department_id, DECODE( department_id, 10, 'Administration' ,
+                                             20, 'Marketing', 
+                                              'Alt departmanet') Nume_departamant FROM departments;
+                                              
+/
+-- 27.Scrieti o cerere pentru a afisa job-ul, salariul total pentru job-ul respectiv pe departamente
+--si salariul total pentru job-ul respectiv pe departamentele 30, 50, 80.
+
+SELECT job_id, SUM(DECODE(department_id, 30, salary)) AS "Dep 30",
+        SUM(DECODE(department_id,  50, salary)) AS "Dep 50",
+        SUM (DECODE(department_id, 80, salary)) AS "Dep 80",
+        SUM(DECODE(department_id, 30, salary,
+                                  50, salary, 
+                                  80, salary)) AS "Total"
+FROM employees 
+GROUP BY job_id;
+
+/
+
+--28.Sã se creeze o cerere prin care sã se afiseze numãrul total de angajati si, din acest total,
+--numãrul celor care au fost angajati în 1997, 1998, 1999 si 2000. Denumiti capetele de
+--tabel in mod corespunzator.
+
+--SELECT COUNT(employee_id) AS "NR_ang", 
+--       DECODE(to_char(hire_date, 'yyyy'), 1997, employee_id) AS "1997"
+--       FROM employees;
+----       COUNT(DECODE(to_char(hire_date, 'yyyy'), 1998, employee_id)) AS "1998",
+----       COUNT(DECODE(to_char(hire_date, 'yyyy'), 1999, employee_id)) AS "1999",
+----       COUNT(DECODE(to_char(hire_date, 'yyyy'), 2000, employee_id)) AS "2000"
+--       
+--FROM employees;
+--/
+--30. Sã se afiseze codul, numele departamentului si suma salariilor pe departamente.
+
+SELECT a.department_id, a.department_name, (SELECT sum(salary) FROM employees WHERE department_id=a.department_id ) "SUMA"
+FROM departments a;
+/
+--31. Sã se afiseze numele, salariul, codul departamentului si salariul mediu din departamentul
+--respectiv.
+SELECT d.department_id, d.department_name, e.salary, (SELECT avg(salary) FROM employees WHERE department_id=d.department_id ) "AVERAGE"
+FROM departments d, employees e where e.department_id =d.department_id;
+/
+--32. Modificati cererea anterioarã, pentru a determina si listarea numãrului de angajati din
+--departamente.
+ SELECT last_name,salary,e.department_id,
+ (SELECT avg(salary)
+ FROM employees
+ WHERE department_id=d.department_id) medie,
+ (SELECT count(employee_id)
+ FROM employees
+ WHERE department_id=d.department_id) nr
+FROM employees e join departments d
+ON e.department_id=d.department_id;
+--33. Pentru fiecare departament, sa se afiseze numele acestuia, numele si salariul
+--celor mai
+-- prost platiti angajati din cadrul sau.
+SELECT last_name,salary,e.department_id,
+ (SELECT avg(salary)
+ FROM employees
+ WHERE department_id=d.department_id) medie,
+ (SELECT count(employee_id)
+ FROM employees
+ WHERE department_id=d.department_id) nr
+FROM employees e join departments d
+ON e.department_id=d.department_id;
+
+       

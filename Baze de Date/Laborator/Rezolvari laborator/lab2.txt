@@ -1,0 +1,73 @@
+--2.Sa se afiseze cel mai mare salariu, cel mai mic salariu, suma si media
+--salariilor
+--tuturor angajatilor. Etichetati coloanele Maxim, Minim, Suma, respectiv Media. Sa
+--se
+--rotunjeasca rezultatele.
+
+Select round(max(salary), 0) Maxim,  round(min(salary), 0) Minim, round(sum(salary),0) Suma, 
+round(avg(salary),0) Media from employees;
+/
+--3. Sa se afiseze minimul, maximul, suma si media salariilor pentru fiecare job.
+Select round(max(salary), 0) Maxim,  round(min(salary), 0) Minim, round(sum(salary),0) Suma, 
+round(avg(salary),0) Media, job_id from employees group by job_id;
+/
+--4. Sa se afiseze numarul de angajati pentru fiecare job.
+SELECT COUNT(employee_id), job_id from employees GROUP BY job_id;
+/
+--5. Sa se determine numarul de angajati care sunt sefi. Etichetati coloana 'Nr.
+--manageri'.
+SELECT COUNT(DISTINCT manager_id)
+FROM employees;
+/
+--6. Sa se afiseze diferenta dintre cel mai mare si cel mai mic salariu. Etichetati
+--coloana.
+SELECT max(salary)-min(salary) diferenta from employees;
+/
+--7. Scrieti o cerere pentru a se afisa numele departamentului, locatia, numarul de
+--angajati si salariul mediu pentru angajatii din acel departament. Coloanele vor fi
+--etichetate corespunzator.
+
+SELECT department_name dep, location_id loc, count(employee_id) nr_ang , round(avg(salary), 0) sal 
+from employees  JOIN departments  using (department_id) GROUP BY department_name, location_id;
+/
+--8. Sa se afiseze codul si numele angajatilor care castiga mai mult decat salariul
+--mediu
+--din firma. Se va sorta rezultatul in ordine descrescatoare a salariilor.
+
+SELECT employee_id, last_name,salary
+FROM employees
+GROUP BY employee_id, last_name, salary
+HAVING salary>(SELECT avg(salary)
+FROM employees)
+ORDER BY salary DESC;
+/
+SELECT employee_id, last_name,salary
+FROM employees
+where salary>(SELECT avg(salary)
+FROM employees)
+ORDER BY salary DESC;
+/
+--9. Pentru fiecare sef, sa se afiseze codul sau si salariul celui mai prost platit
+--subordonat. Se vor exclude cei pentru care codul managerului nu este cunoscut. De
+--asemenea, se vor exclude grupurile in care salariul minim este mai mic de 1000$.
+--Sortati rezultatul �n ordine descrescatoare a salariilor.
+ 
+SELECT  manager_id,  min(salary)
+FROM employees
+WHERE manager_id is not null 
+HAVING min(salary)>=1000
+GROUP BY manager_id
+ORDER BY 1 DESC;
+/
+--10. Pentru departamentele in care salariul maxim depăşeşte 3000$, să se obţină codul,
+--numele acestor departamente şi salariul maxim pe departament.
+
+select d.department_id, d.department_name, max(e.salary) from employees e, 
+departments d where d.department_id=e.department_id GROUP by d.department_name, d.department_id HAVING max(salary)>3000;
+/--11. Care este salariul mediu minim al job-urilor existente? Salariul mediu al unui
+--job va fi
+--considerat drept media arirmetica a salariilor celor care il practica.
+SELECT min(avg(salary))
+FROM employees
+GROUP BY job_id;
+--se afla care e salariu mediu pentru fiecare job si apoi se afla care e cel mai mic dintre acele salarii.

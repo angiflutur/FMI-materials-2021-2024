@@ -1,0 +1,58 @@
+--Sa se găsească angajatul care câstiga salariul minim.​
+SELECT first_name, last_name FROM empolyees WHERE salary=(Select min(salary) FROM employees);
+
+
+--16. Folosind subcereri, să se afişeze numele şi data angajării pentru salariaţii care au
+--fost angajaţi după Gates.
+
+SELECT last_name, hire_date
+FROM employees
+WHERE hire_date > (SELECT hire_date
+FROM employees
+WHERE INITCAP(last_name)=’Gates’);
+
+--17. Folosind subcereri, scrieţi o cerere pentru a afişa numele şi salariul pentru toţi
+--colegii (din acelaşi departament) lui Gates. Se va exclude Gates.
+
+SELECT last_name, salary
+FROM employees
+WHERE department_id IN (SELECT department_id
+FROM employees
+WHERE LOWER(last_name)=’gates’)
+AND LOWER(last_name) <> ’gates’;
+
+--18. Folosind subcereri, să se afişeze numele şi salariul angajaţilor conduşi direct de
+--preşedintele companiei (acesta este considerat angajatul care nu are manager).
+
+SELECT last_name, salary
+FROM employees
+WHERE manager_id = (SELECT employee_id
+FROM employees
+WHERE manager_id IS NULL);
+
+--19. Scrieti o cerere pentru a afişa numele, codul departamentului si salariul angajatilor
+--al caror număr de departament si salariu coincid cu numarul departamentului si salariul
+--unui angajat care castiga comision.
+
+SELECT last_name, department_id, salary
+FROM employees
+WHERE (department_id, salary) IN (SELECT department_id, salary
+FROM employees
+WHERE commission_pct IS NOT NULL);
+
+--20.Scrieti o cerere pentru a afisa angajatii care castiga mai mult decat oricare functionar
+--(job-ul conţine şirul “CLERK”). Sortati rezultatele dupa salariu, in ordine descrescatoare.
+--(ALL). Ce rezultat este returnat dacă se înlocuieşte “ALL” cu “ANY”?
+
+SELECT last_name, salary
+FROM employees
+WHERE salary > ANY(SELECT salary
+FROM employees
+WHERE LOWER(job_id) LIKE '%clerk%')
+ORDER BY 2 DESC;
+
+-- >ANY înseamnă „mai mare decât minimul“;
+-- >ALL înseamnă „mai mare decât maximul;
+
+
+
