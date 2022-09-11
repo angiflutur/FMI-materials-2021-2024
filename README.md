@@ -14,4 +14,4 @@ Anul 1:
 	- [Limbaje Formale și Automate](https://github.com/TeodoraLazaroiu/FMI-Materials/tree/main/Limbaje%20Formale%20si%20Automate)
 	- [Programare Orientată pe Obiecte](https://github.com/TeodoraLazaroiu/FMI-Materials/tree/main/Programare%20Orientata%20pe%20Obiecte)
 	- [Structuri de Date](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Structuri%20de%20Date)
-	- [Tehnici Web](https://github.com/TeodoraLazaroiu/FMI-Materials/tree/main/Tehnici%20Web)
+	- [Tehnici Web](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Tehnici%20Web)
