@@ -3,7 +3,7 @@
 Anul 1:
 - Semestrul 1:
 	- [Arhitectura Sistemelor de Calcul](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Arhitectura%20Sistemelor%20de%20Calcul)
-	- [Calcul Diferențial și Integral](https://github.com/TeodoraLazaroiu/FMI-Materials/tree/main/Calcul%20Diferential%20si%20Integral)
+	- [Calcul Diferențial și Integral](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Calcul%20Diferential%20si%20Integral)
 	- Logică Matematică și Computațională
 	- [Programarea Algoritmilor](https://github.com/TeodoraLazaroiu/FMI-Materials/tree/main/Programarea%20Algoritmilor)
 	- [Structuri Algebrice în Informatică](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Structuri%20Algebrice%20in%20Informatica)	
