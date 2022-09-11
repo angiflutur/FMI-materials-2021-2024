@@ -9,7 +9,7 @@ Anul 1:
 	- [Structuri Algebrice în Informatică](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Structuri%20Algebrice%20in%20Informatica)	
 	
 - Semestrul 2:
-	- [Baze de Date](https://github.com/TeodoraLazaroiu/FMI-Materials/tree/main/Baze%20de%20date)
+	- [Baze de Date](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Baze%20de%20Date)
 	- Geometrie și Algebră Liniară
 	- [Limbaje Formale și Automate](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Limbaje%20Formale%20si%20Automate)
 	- [Programare Orientată pe Obiecte](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Programare%20Orientata%20pe%20Obiecte)
