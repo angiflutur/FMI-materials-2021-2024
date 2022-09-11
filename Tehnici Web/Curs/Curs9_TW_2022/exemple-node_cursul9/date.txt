@@ -1,0 +1,2 @@
+Andrei,22,Bucuresti
+Maria,22,Brasov
