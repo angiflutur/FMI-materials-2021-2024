@@ -1,0 +1,69 @@
+m, n, plecare = [int(x) for x in input().split()]
+mat = [[int(j) for j in input().split()]for i in range(m)]
+for linie in mat:
+    linie.append(0)
+    linie.insert(0, 0)
+plecare += 1
+dp = [[999999 for j in range(n+2)] for i in range(m)]
+# dp[i][j] = costul minim pana la pozitia i,j
+# stim direct ulltima linie
+dp[m-1][plecare] = 0
+for linie in mat:
+     print(*linie)
+print()
+#unic = [[True for j in range(n+1)] for i in range(m)]
+for i in range(m-2, -1, -1):
+    for j in range(1, n+1):
+        a=dp[i+1][j-1] + max(mat[i][j] - mat[i+1][j-1], 0)
+        b=dp[i+1][j] + max(mat[i][j] - mat[i+1][j], 0)
+        c=dp[i+1][j+1] + max(mat[i][j] - mat[i+1][j+1], 0)
+        dp[i][j] = min(a,b,c)
+"""
+        if dp[i][j]==a and unic[i+1][j-1] == False:
+            unic[i][j] = False
+        if dp[i][j]==b and unic[i+1][j] == False:
+            unic[i][j] = False
+        if dp[i][j]==c and unic[i+1][j+1] == False:
+            unic[i][j] = False
+        if dp[i][j]==a==b or dp[i][j]==a==c or dp[i][j]==c==b:
+            unic[i][j] = False
+"""
+# for linie in dp:
+#     print(*linie)
+"""
+for linie in unic:
+    print(*linie)
+"""
+minim = min(dp[0])
+j = dp[0].index(minim)
+i = 0
+print(minim)
+
+traseu_unic = 0
+if dp[0].count(minim) > 1:
+    traseu_unic = 1
+
+ls = []
+while i < m-1:
+    a=dp[i+1][j-1] + max(mat[i][j] - mat[i+1][j-1], 0)
+    b=dp[i+1][j] + max(mat[i][j] - mat[i+1][j], 0)
+    c=dp[i+1][j+1] + max(mat[i][j] - mat[i+1][j+1], 0)
+    if dp[i][j]==a == b or dp[i][j]==b==c or dp[i][j]==c==a:
+        traseu_unic=1
+    if dp[i][j] == dp[i+1][j-1] + max(mat[i][j] - mat[i+1][j-1], 0):
+        ls.append((i, j-1))
+        i += 1
+        j -= 1
+    elif dp[i][j] == dp[i+1][j] + max(mat[i][j] - mat[i+1][j], 0):
+        ls.append((i, j-1))
+        i += 1
+    else:
+        ls.append((i, j-1))
+        i += 1
+        j += 1
+ls.append((i, j-1))
+print(*ls[::-1], sep='\n')
+if traseu_unic:
+    print("traseul nu este unic")
+else:
+    print("traseul este unic")
