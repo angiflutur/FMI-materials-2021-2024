@@ -15,3 +15,12 @@ Anul 1:
 	- [Programare Orientată pe Obiecte](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Programare%20Orientata%20pe%20Obiecte)
 	- [Structuri de Date](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Structuri%20de%20Date)
 	- [Tehnici Web](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Tehnici%20Web)
+	
+Anul 2:
+- Semestrul 1:
+	- Algoritmi Fundamentali
+	- Dezvoltarea Aplicatiilor Web - ASP .NET
+	- Probabilitati si Statistica
+	- Programare Functionala
+	- Sisteme de Gestiune a Bazelor de Date
+	- Sisteme de operare
