@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .stil {
+        color: red;
+      }
+    </style>
+    <script>
+      function randomNumber(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
+      }
+      window.onload = function () {
+        n = randomNumber(10, 20);
+        for (var i = 0; i < n; i++) {
+          var div = document.createElement("div");
+          div.className = "stil";
+          div.innerHTML = "Eu sunt paragraful " + i;
+          div.style.position = "relative";
+          div.style.left = "0px";
+          var stil = window.getComputedStyle(div);
+
+          document.body.appendChild(div);
+
+          div.onclick = function (event) {
+            v = ["green", "yellow", "brown", "pink", "blue", "orange", "lime"];
+            var cul = v[Math.floor(Math.random() * v.length)];
+            this.style.color = cul;
+            event.stopPropagation();
+          };
+        }
+        document.body.onclick = function () {
+          console.log("DA");
+          var divuri = document.getElementsByClassName("stil");
+          for (d of divuri) d.style.color = "red";
+        };
+      };
+    </script>
+  </head>
+  <body></body>
+</html>
