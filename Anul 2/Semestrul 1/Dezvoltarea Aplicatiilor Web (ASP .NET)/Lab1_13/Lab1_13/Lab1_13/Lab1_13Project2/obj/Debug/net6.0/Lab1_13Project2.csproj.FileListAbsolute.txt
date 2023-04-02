@@ -1,0 +1,15 @@
+C:\Users\mihae\Desktop\Lab 2022\Lab1_13\Lab1_13\Lab1_13\Lab1_13Project2\obj\Debug\net6.0\Lab1_13Project2.csproj.AssemblyReference.cache
+C:\Users\mihae\Desktop\Lab 2022\Lab1_13\Lab1_13\Lab1_13\Lab1_13Project2\obj\Debug\net6.0\Lab1_13Project2.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mihae\Desktop\Lab 2022\Lab1_13\Lab1_13\Lab1_13\Lab1_13Project2\obj\Debug\net6.0\Lab1_13Project2.AssemblyInfoInputs.cache
+C:\Users\mihae\Desktop\Lab 2022\Lab1_13\Lab1_13\Lab1_13\Lab1_13Project2\obj\Debug\net6.0\Lab1_13Project2.AssemblyInfo.cs
+C:\Users\mihae\Desktop\Lab 2022\Lab1_13\Lab1_13\Lab1_13\Lab1_13Project2\obj\Debug\net6.0\Lab1_13Project2.csproj.CoreCompileInputs.cache
+C:\Users\mihae\Desktop\Lab 2022\Lab1_13\Lab1_13\Lab1_13\Lab1_13Project2\bin\Debug\net6.0\Lab1_13Project2.exe
+C:\Users\mihae\Desktop\Lab 2022\Lab1_13\Lab1_13\Lab1_13\Lab1_13Project2\bin\Debug\net6.0\Lab1_13Project2.deps.json
+C:\Users\mihae\Desktop\Lab 2022\Lab1_13\Lab1_13\Lab1_13\Lab1_13Project2\bin\Debug\net6.0\Lab1_13Project2.runtimeconfig.json
+C:\Users\mihae\Desktop\Lab 2022\Lab1_13\Lab1_13\Lab1_13\Lab1_13Project2\bin\Debug\net6.0\Lab1_13Project2.dll
+C:\Users\mihae\Desktop\Lab 2022\Lab1_13\Lab1_13\Lab1_13\Lab1_13Project2\bin\Debug\net6.0\Lab1_13Project2.pdb
+C:\Users\mihae\Desktop\Lab 2022\Lab1_13\Lab1_13\Lab1_13\Lab1_13Project2\obj\Debug\net6.0\Lab1_13Project2.dll
+C:\Users\mihae\Desktop\Lab 2022\Lab1_13\Lab1_13\Lab1_13\Lab1_13Project2\obj\Debug\net6.0\refint\Lab1_13Project2.dll
+C:\Users\mihae\Desktop\Lab 2022\Lab1_13\Lab1_13\Lab1_13\Lab1_13Project2\obj\Debug\net6.0\Lab1_13Project2.pdb
+C:\Users\mihae\Desktop\Lab 2022\Lab1_13\Lab1_13\Lab1_13\Lab1_13Project2\obj\Debug\net6.0\Lab1_13Project2.genruntimeconfig.cache
+C:\Users\mihae\Desktop\Lab 2022\Lab1_13\Lab1_13\Lab1_13\Lab1_13Project2\obj\Debug\net6.0\ref\Lab1_13Project2.dll
