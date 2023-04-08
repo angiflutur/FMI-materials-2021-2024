@@ -24,3 +24,13 @@ Anul 2:
 	- [Programare Functionala](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%201/Programare%20Functionala)
 	- Sisteme de Gestiune a Bazelor de Date
 	- Sisteme de operare
+	
+- Semestrul 2:
+	- Algoritmi Avansati
+	- Fundamentele Limbajelor de programare
+	- [Inteligenta Artificiala](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%202/Inteligenta%20Artificiala)
+	- Metode de Dezvoltare Software
+	- Programare Avansata pe Obiecte
+	- Retele Calculatoare
+
+	
