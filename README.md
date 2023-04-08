@@ -1,6 +1,6 @@
 # FMI-materials-2021-2024
 
-Anul 1:
+## Anul 1:
 - Semestrul 1:
 	- [Arhitectura Sistemelor de Calcul](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%201/Semestrul%201/Arhitectura%20Sistemelor%20de%20Calcul)
 	- [Calcul Diferențial și Integral](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%201/Semestrul%201/Calcul%20Diferential%20si%20Integral)
@@ -16,7 +16,7 @@ Anul 1:
 	- [Structuri de Date](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%201/Semestrul%202/Structuri%20de%20Date)
 	- [Tehnici Web](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%201/Semestrul%202/Tehnici%20Web)
 	
-Anul 2:
+## Anul 2:
 - Semestrul 1:
 	- [Algoritmi Fundamentali](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%201/Algoritmi%20Fundamentali)
 	- Dezvoltarea Aplicatiilor Web - ASP .NET
