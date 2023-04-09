@@ -23,7 +23,7 @@
 	* Dezvoltarea Aplicatiilor Web - ASP .NET
 	* [Probabilitati si Statistica](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%201/Probabilitati%20si%20Statistica)
 	* [Programare Functionala](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%201/Programare%20Functionala)
-	* Sisteme de Gestiune a Bazelor de Date
+	* [Sisteme de Gestiune a Bazelor de Date](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%201/Sisteme%20de%20Gestiune%20a%20Bazelor%20de%20Date)
 	* Sisteme de operare
 	
 - Semestrul 2:
