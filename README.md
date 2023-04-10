@@ -32,7 +32,7 @@
 	* [Inteligenta Artificiala](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%202/Inteligenta%20Artificiala)
 	* Metode de Dezvoltare Software
 	* Programare Avansata pe Obiecte
-	* Retele Calculatoare
+	* [Retele Calculatoare](https://github.com/senisioi/computer-networks)
 	
 	
 	
