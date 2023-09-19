@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "Hash": "OATp/HOOf//0dYwKO9BcrTD8J9X/Y+sbDDvV5O6gdD4=",
+  "Source": "Demo",
+  "BasePath": "_content/Demo",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "Demo\\wwwroot",
+      "Source": "Demo",
+      "ContentRoot": "C:\\Users\\mihae\\Desktop\\Labs fmi\\Lab 2022\\lab 10 demo sg 11\\Demo\\Demo\\wwwroot\\",
+      "BasePath": "_content/Demo",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\mihae\\Desktop\\Labs fmi\\Lab 2022\\lab 10 demo sg 11\\Demo\\Demo\\wwwroot\\favicon.ico",
+      "SourceId": "Demo",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\mihae\\Desktop\\Labs fmi\\Lab 2022\\lab 10 demo sg 11\\Demo\\Demo\\wwwroot\\",
+      "BasePath": "_content/Demo",
+      "RelativePath": "favicon.ico",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\favicon.ico"
+    }
+  ]
+}
