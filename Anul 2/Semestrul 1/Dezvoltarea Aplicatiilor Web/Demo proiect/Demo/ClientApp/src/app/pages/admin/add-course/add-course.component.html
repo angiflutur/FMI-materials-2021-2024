@@ -1,0 +1,20 @@
+<mat-card>
+  <p>Add new Course</p>
+  <form [formGroup]="courseForm">
+    <mat-form-field appearance="fill">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" />
+    </mat-form-field>
+    <br />
+    <mat-form-field appearance="fill">
+      <mat-label>Description</mat-label>
+      <input matInput formControlName="description" />
+    </mat-form-field>
+    <br />
+    <mat-form-field appearance="fill">
+      <mat-label>MaximumStudentsAllowed</mat-label>
+      <input matInput formControlName="maximumStudentsAllowed" />
+    </mat-form-field>
+  </form>
+  <br />
+  <button mat-raised-button (click)="checkForm()">Submit</button>

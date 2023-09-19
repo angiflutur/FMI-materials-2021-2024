@@ -1,0 +1,10 @@
+<mat-selection-list [(ngModel)] ="selectedStudents">
+  <mat-list-option *ngFor="let student of studentsList" [value]="student">
+    {{student.firstName}} - {{student.lastName}}
+  </mat-list-option>
+</mat-selection-list>
+
+<p>
+  Options selected: {{selectedStudents.length}}
+</p>
+<button (click)="updateCourse()"> Update course </button>
