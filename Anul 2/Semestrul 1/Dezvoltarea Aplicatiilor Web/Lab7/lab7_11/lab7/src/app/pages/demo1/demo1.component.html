@@ -1,0 +1,26 @@
+<mat-card>
+  <p>{{title}}</p>
+  <p>Student1 with id passed in route name is {{studentFromApi1.name}}</p>
+  <p>Student2 with id passed in query params name is {{studentFromApi1.name}}</p>
+  <p>Student3 with id passed in headers name is {{studentFromApi1.name}}</p>
+
+  <mat-card>
+    <p> List with Router link (similar with html tag a)</p>
+    <p> Students list </p>
+    <p *ngFor="let student of students" [routerLink]="['/demo2', student.id]">
+      Student name is {{student.name}} <br />
+      Student age is {{student.age}} <br />
+      Student id is {{student.id}}
+    </p>
+  </mat-card>
+  <mat-divider></mat-divider>
+  <mat-card>
+    <p> List with click method</p>
+    <p> Students list </p>
+    <p *ngFor="let student of students" (click)="navigateTo(student)">
+      Student name is {{student.name}} <br />
+      Student age is {{student.age}} <br />
+      Student id is {{student.id}}
+    </p>
+  </mat-card>
+</mat-card>
