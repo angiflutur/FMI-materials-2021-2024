@@ -1,0 +1,7 @@
+Dimensiunea populației (numărul de cromozomi): 20
+Domeniul de definiție al funcției (capetele unui interval închis): -1 2
+Parametrii pentru funcția de maximizat (coeficienții polinomului de grad 2): -1 1 2
+Precizia cu care se lucrează (cu care se discretizează intervalul): 6
+Probabilitatea de recombinare (crossover, încrucișare): 0.25
+Probabilitatea de mutație: 0.01
+Numărul de etape al algoritmului: 20
