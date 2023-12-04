@@ -43,4 +43,5 @@
 	* **Opt. Arheologia Masinilor Inteligente**
 	* **Grafica pe Calculator**
 	* **Frontend Avansat: React&Angular**
-	
+- **Semestrul 1:**
+##
