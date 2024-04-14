@@ -1,0 +1,10 @@
+.container {
+  border: 2px solid black;
+  border-radius: 1rem;
+  padding: 4px;
+  max-width: 200px;
+}
+
+.container:hover {
+  background-color: lightgray;
+}

@@ -1,0 +1,10 @@
+<tr>
+  <td>{{ studentData.nume | uppercase }}</td>
+  <td>{{ studentData.nota }}</td>
+  <td>
+    {{ noDate | date : "medium" }}
+  </td>
+  <td>
+    <button (click)="exmatriculeazaStudent(studentData)">Exmatriculeaza</button>
+  </td>
+</tr>

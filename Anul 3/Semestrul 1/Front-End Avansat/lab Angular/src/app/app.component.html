@@ -1,0 +1,67 @@
+<!--ngIf-->
+<!-- <div *ngIf="showAlert" class="alert alert-primary" role="alert">
+  A simple primary alert—check it out!
+</div>
+<div [hidden]="!showAlert" class="alert alert-secondary" role="alert">
+  A simple secondary alert—check it out!
+</div> -->
+
+<!--ngIf then si else-->
+
+<!-- <ng-template *ngIf="showAlert; then showBlock; else notShowBlock"></ng-template>
+<ng-template #showBlock>
+  <div class="alert alert-primary" role="alert">
+    A simple primary alert—check it out!
+  </div>
+</ng-template>
+<ng-template #notShowBlock>
+  <div class="alert alert-secondary" role="alert">
+    A simple secondary alert—check it out!
+  </div>
+</ng-template>
+
+<button (click)="doHideOrShowAlert()" type="button" class="btn btn-primary">
+  Show/Hide Alert
+</button>
+
+<ul class="list-group">
+  <li *ngFor="let fruct of fructe" class="list-group-item">{{ fruct }}</li>
+</ul>
+
+<button (click)="adaugaFruct('strugure')" class="btn btn-success">
+  Adauga fruct
+</button>
+
+<ul class="list-group">
+  <li
+    *ngFor="let student of studenti"
+    [class]="
+      student.nota > 5
+        ? 'list-group-item text-success'
+        : 'list-group-item text-danger'
+    "
+    class="list-group-item"
+    [ngClass]="student.nota > 5 ? 'text-success' : 'text-danger'"
+  >
+    {{ student.nume }} {{ student.nota }}
+    <button [disabled]="student.nota > 5">Exmatriculeaza</button>
+  </li>
+</ul> -->
+
+<!-- <table>
+  <thead>
+    <tr>
+      <th>Nume</th>
+      <th>Nota</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody *ngFor="let student of studenti">
+    <app-students-row
+      [studentData]="student"
+      (doExmatriculare)="exmatriculeaza($event)"
+    ></app-students-row>
+  </tbody>
+</table> -->
+
+<router-outlet></router-outlet>
