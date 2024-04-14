@@ -1,0 +1,39 @@
+1. (10p) Care este diferenta dintre o variabilă condițională şi un semafor? Arătați printr-un exemplu scurt cum ați putea utiliza cele două obiecte pentru a obține acelaşi rezultat.
+
+2. (10p) Fie următoarea arborescență de procesese
+1: 2
+2: 3, 4, 5, 6, 7
+3: 8
+8: 9
+7: 10
+10:11
+
+Scrieți o secvență de cod care la finalul execuției reproduce această structură.
+
+3. Fie un procesor pe 6-biți cu paginare ce emite adrese logice de tip:
+ 5 4    3 2 1 
+_______________
+|p  |    d    |
+|_____________|
+
+(a) Care este numărul total de pagini? Care este dimensiunea unei pagini? Care este dimen- siunea totală a memoriei virtuale?
+(b) Fie ca pe acest sistem un int să aibă 2 bytes și fie vectorul de întregi v[10]. De câte frame-uri este nevoie să ținem tot vectorul în memoria fizică? Apare fragmentare și de ce tip dacă da? Scrieți tabela de pagini. Unde se află v[5] și cum arată adresa logică pentru acces? 
+(c) Câte copii ale lui v ați putea ține maxim în memorie? Cum ați modifica paginarea pentru a stoca mai multe? Câte copii ar încăpea atunci? Unde s-ar afla v[9] și cum ar arată adresa logică pentru acces?
+
+4. Fie următoarea secvență de procese în lista de așteptare, unde CPU este timpul total de execuție
+Proces   Start  CPU
+  P0       1     4
+  P1       0     3
+  P2       3     5
+  P3       2     8
+  P4       3     1
+  P5       2     7
+  P6       4     5
+necesar procesului și Start momentul la care procesul a sosit în coada de aşteptare.
+(a) Cum arată diagrama Gantt rezultată în urma aplicării unui algoritm de tip Round Robin cu cuantă inițială q0 = 3 în care quanta se dublează per proces dacă procesul este evacuat în urma epuizării timpului alocat?
+(b) Dar în urma aplicării SJF? Algoritmul este preemptive.
+(c) Care este timpul mediu de așteptare la punctele anterioare?
+
+5. Fie un sistem de fişiere cu strategie de alocare bazată pe indexare pe două nivele unde un bloc are 128 bytes implementat pe un CPU pe 16-biți unde un byte are 8 biti.
+(a) Câți indecși pot fi înmagazinați în primul nivel? Dar în total? Care este dimensiunea maximă a unui fişier?
+(b) Cum este tradusă o adresă logică în adresarea blocurilor la nivelul sistemului de fişiere? Dar dacă am mai adăuga un nivel?
