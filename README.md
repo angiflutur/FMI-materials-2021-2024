@@ -24,7 +24,7 @@
 	* **[Probabilitati si Statistica](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%201/Probabilitati%20si%20Statistica)**
 	* **[Programare Functionala](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%201/Programare%20Functionala)**
 	* **[Sisteme de Gestiune a Bazelor de Date](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%201/Sisteme%20de%20Gestiune%20a%20Bazelor%20de%20Date)**
-	* **[Sisteme de operare](https://cs.unibuc.ro/~pirofti/so.html)**
+	* **[Sisteme de operare]([https://cs.unibuc.ro/~pirofti/so.html](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%201/Sisteme%20de%20Operare))** [site curs](https://cs.unibuc.ro/~pirofti/so.html)
 	
 - **Semestrul 2:**
 	* **[Algoritmi Avansati](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%202/Algoritmi%20Avansati)**
@@ -37,11 +37,11 @@
 ##
 ### <u>Anul 3: </u>
 - **Semestrul 1:**
-    * **Inginerie Software**
-	* **Securitatea Sistemelor Informatice**
-	* **Calculabilitate si Complexitate**
-	* **Opt. Arheologia Masinilor Inteligente**
-	* **Grafica pe Calculator**
-	* **Frontend Avansat: React&Angular**
+    * **[Inginerie Software](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Inginerie%20Software)**
+	* **[Securitatea Sistemelor Informatice](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Securitatea%20Sistemelor%20Informatice)**
+	* **[Calculabilitate si Complexitate]([https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Arheologie](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Calculabilitate%26Complexitate))**
+	* **[Opt. Arheologia Masinilor Inteligente](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Arheologie)**
+	* **[Grafica pe Calculator](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Grafica%20pe%20Calculator)**
+	* **[Frontend Avansat: React&Angular](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Front-End%20Avansat)**
 - **Semestrul 2:**
 ##
