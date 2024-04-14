@@ -24,7 +24,7 @@
 	* **[Probabilitati si Statistica](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%201/Probabilitati%20si%20Statistica)**
 	* **[Programare Functionala](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%201/Programare%20Functionala)**
 	* **[Sisteme de Gestiune a Bazelor de Date](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%201/Sisteme%20de%20Gestiune%20a%20Bazelor%20de%20Date)**
-	* **[Sisteme de operare](https://cs.unibuc.ro/~pirofti/so.html](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%201/Sisteme%20de%20Operare )** [site curs](https://cs.unibuc.ro/~pirofti/so.html)
+	* **[Sisteme de operare](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%201/Sisteme%20de%20Operare)** [site curs](https://cs.unibuc.ro/~pirofti/so.html)
 	
 - **Semestrul 2:**
 	* **[Algoritmi Avansati](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%202/Algoritmi%20Avansati)**
