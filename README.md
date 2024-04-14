@@ -39,7 +39,7 @@
 - **Semestrul 1:**
     * **[Inginerie Software](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Inginerie%20Software)**
 	* **[Securitatea Sistemelor Informatice](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Securitatea%20Sistemelor%20Informatice)**
-	* **[Calculabilitate si Complexitate]([https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Arheologie](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Calculabilitate%26Complexitate))**
+	* **[Calculabilitate si Complexitate](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Calculabilitate%26Complexitate)**
 	* **[Opt. Arheologia Masinilor Inteligente](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Arheologie)**
 	* **[Grafica pe Calculator](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Grafica%20pe%20Calculator)**
 	* **[Frontend Avansat: React&Angular](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Front-End%20Avansat)**
