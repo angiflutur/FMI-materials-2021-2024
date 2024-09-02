@@ -1,0 +1,90 @@
+'e12', identifier; 3; line 1
+'/**/', multi_line_comment; 4; line 1
+'/*"*/', multi_line_comment; 5; line 1
+'"*////////*"', string_literal; 12; line 1
+'*', operator; 1; line 2
+'/', operator; 1; line 2
+'/* lkj lkjlkokj
+
+   ;lkjlj ;lj ;l
+
+
+
+*/', multi_line_comment; 39; line 8
+'/*
+
+
+  kjk*/', multi_line_comment; 12; line 11
+'"/*lkjlkj'e'"', string_literal; 13; line 11
+'"/*"', string_literal; 4; line 11
+'*', operator; 1; line 11
+'/', operator; 1; line 11
+'"', error; 1; line 11
+'/', operator; 1; line 15
+'*', operator; 1; line 15
+'*', operator; 1; line 15
+'/', operator; 1; line 15
+'void', keyword; 4; line 16
+'main', keyword; 4; line 16
+'(', separator; 1; line 16
+'int', keyword; 3; line 16
+'argc', identifier; 4; line 16
+',', separator; 1; line 16
+'char', keyword; 4; line 16
+'*', operator; 1; line 16
+'argv', identifier; 4; line 16
+'[', separator; 1; line 16
+']', separator; 1; line 16
+')', separator; 1; line 16
+'{', separator; 1; line 16
+'"12e-25"', string_literal; 8; line 17
+'if', keyword; 2; line 17
+'(', separator; 1; line 17
+'(', separator; 1; line 17
+'e12', identifier; 3; line 17
+'.', error; 1; line 17
+'f', identifier; 1; line 17
+'++', complex operator; 2; line 17
+'+=', complex operator; 2; line 17
+'12e-3', int_constant; 5; line 17
+'<<=', complex operator; 3; line 17
+'12.3e-12', float_constant; 8; line 17
+'+', operator; 1; line 17
+'*', operator; 1; line 17
+'ab12', identifier; 4; line 17
+'.', error; 1; line 17
+'ef', identifier; 2; line 17
+')', separator; 1; line 17
+'&&', complex operator; 2; line 17
+'qwe', identifier; 3; line 17
+'.', error; 1; line 17
+'f', identifier; 1; line 17
+'.', error; 1; line 17
+'e', identifier; 1; line 17
+'/', operator; 1; line 17
+'*', operator; 1; line 17
+'f', identifier; 1; line 17
+'++', complex operator; 2; line 17
+'++', complex operator; 2; line 17
+'+', operator; 1; line 17
+'g', identifier; 1; line 17
+')', separator; 1; line 17
+'{', separator; 1; line 17
+';', separator; 1; line 17
+'}', separator; 1; line 17
+''0'', char_literal; 3; line 17
+';', separator; 1; line 18
+'f', identifier; 1; line 18
+'(', separator; 1; line 18
+')', separator; 1; line 18
+';', separator; 1; line 18
+'"', error; 1; line 20
+'ana', identifier; 3; line 20
+'are', identifier; 3; line 21
+'mere', identifier; 4; line 22
+'"', error; 1; line 22
+'return', keyword; 6; line 24
+'0', int_constant; 1; line 24
+';', separator; 1; line 24
+'}', separator; 1; line 25
+'"as"', string_literal; 4; line 25

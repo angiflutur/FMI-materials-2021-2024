@@ -1,0 +1,253 @@
+# set de cuvinte cheie din C
+import copy
+
+keywords = {
+    'auto', 'break', 'case', 'char', 'const', 'continue', 'default', 'do',
+    'double', 'else', 'enum', 'extern', 'float', 'for', 'goto', 'if',
+    'int', 'long', 'register', 'return', 'short', 'signed', 'sizeof', 'static',
+    'struct', 'switch', 'typedef', 'union', 'unsigned', 'void', 'volatile',
+    'while', 'main'
+}
+
+# set de operatori complecsi din C
+complex_operators = {
+    '++', '--', '+=', '-=', '*=', '/=', '%=', '==', '!=', '<=', '>=', '&&', '||',
+    '<<', '>>', '->', '&=', '|=', '^=', '<<=', '>>='
+}
+
+
+# verificam daca e separator
+def is_separator(char):
+    separators = ' \t\n;,()[]{}.'
+    return char in separators
+
+
+# verificam daca e operator
+def is_operator(char):
+    operators = '+-*/%=><!&|^?:'
+    return char in operators or char in complex_operators
+
+
+# verificam daca e litera
+def is_alpha(char):
+    return char.isalpha()
+
+
+# verificam daca e cifra
+def is_digit(char):
+    return char.isdigit()
+
+
+##################################################################################
+
+# extragem identificatorul sau keyword-ul
+def extract_identifier_or_keyword(file_content, position):
+    identifier = file_content[position]
+    position += 1
+
+    # construim identificatorul
+    while (position < len(file_content) and
+           (is_alpha(file_content[position]) or is_digit(file_content[position]))):
+        identifier += file_content[position]
+        position += 1
+    # setam tipul
+    if identifier in keywords:
+        token_type = 'keyword'
+    else:
+        token_type = 'identifier'
+    return identifier, position, token_type
+
+
+# extragem un numar (intreg sau flotant)
+def extract_number(file_content, position):
+    number = ''
+    has_dot = False  # pentru a verifica daca am intalnit un punct in numar
+
+    # verificam daca avem semnul minus
+    if file_content[position] == '-':
+        number += file_content[position]
+        position += 1
+
+    # construim numarul
+    # verificam daca am gasit deja un punct (pt cazul float)
+    while position < len(file_content) and (is_digit(file_content[position])
+                or (file_content[position] == '.' and not has_dot)):
+        if file_content[position] == '.':
+            has_dot = True
+        number += file_content[position]
+        position += 1
+
+    # verificam daca avem exponent
+    if position < len(file_content) and (file_content[position] == 'e'):
+        number += file_content[position]
+        position += 1
+
+        # verificam daca avem exponent cu + sau -
+        if position < len(file_content) and (file_content[position] == '+'
+                                          or file_content[position] == '-'):
+            number += file_content[position]
+            position += 1
+
+        # construim nr in continuare
+        while position < len(file_content) and is_digit(file_content[position]):
+            number += file_content[position]
+            position += 1
+
+    # daca are punct => float
+    if has_dot:
+        token_type = 'float_constant'
+    else:
+        token_type = 'int_constant'
+    return number, position, token_type
+
+
+# extragem un literal string/char
+def extract_string_or_char_literal(file_content, position, line_number):
+    delimiter = file_content[position]
+    string_literal = delimiter
+    position += 1
+    aux_position = position
+    aux_string = string_literal
+
+    # citim pana ajungem la delimitator sau pana se termina fisierul
+    while position < len(file_content) and file_content[position] != delimiter:
+        # Verificam daca intalnim un caracter de noua linie in interiorul literalului
+        if file_content[position] == '\n':
+            # verificam daca avem caracterul \ pentru literali pe linii multiple
+            if file_content[position - 1] != '\\':
+                string_literal = aux_string
+                position = aux_position
+                return string_literal, position, "error", line_number
+            else:
+                # incrementam numarul de linii
+                line_number += 1
+        string_literal += file_content[position]
+        position += 1
+
+    # verificam daca am gasit delimitatorul final
+    # daca nu l-am gasit => error
+    if position < len(file_content) and file_content[position] == delimiter:
+        string_literal += delimiter
+        position += 1
+    else:
+        string_literal = aux_string
+        position = aux_position
+        return string_literal, position, "error", line_number
+
+    if delimiter == '"':
+        token_type = 'string_literal'
+    elif delimiter == "'":
+        token_type = 'char_literal'
+    return string_literal, position, token_type, line_number
+
+# extragem comentarii / tratam operatorul de impartire
+def extract_comment_or_divide(file_content, position, line_number):
+    # daca avem "//" => comentariu pe o singura linie
+    if position + 1 < len(file_content) and file_content[position + 1] == '/':
+        end_line_position = file_content.find('\n', position)
+
+        # construim comentariul pana la finalul liniei curente
+        if end_line_position != -1:
+            comment = file_content[position:end_line_position]
+        else:
+            # in caz de comentariul e pe ultima linie din fisier
+            comment = file_content[position:]
+
+        return comment, position + len(comment), 'single_line_comment', line_number
+
+    # daca avem "/*" => comentariu pe mai multe linii
+    elif position + 1 < len(file_content) and file_content[position + 1] == '*':
+        end_comment_position = file_content.find('*/', position + 2)
+
+        # daca am gasit terminatorul de comentariu pe mai multe linii (*/)
+        if end_comment_position != -1:
+
+            # construim comentariul pana la */
+            comment = file_content[position:end_comment_position + 2]
+
+            # numaram pe cate linii se intinde comentariul
+            lines_in_comment = comment.count('\n')
+            line_number += lines_in_comment
+            return comment, end_comment_position + 2, 'multi_line_comment', line_number
+        else:
+            # nu a gasit operatorul de inchidere comentariu, deci => error
+            return file_content[position:], len(file_content), 'error', line_number
+
+    else:  # este operator de impartire
+        return '/', position + 1, 'operator', line_number
+
+
+##################################################################################
+# functia pentru analizatorul lexical
+def lexical_analyzer(file_content, line_number, position):
+    while position < len(file_content):
+        char = file_content[position]
+
+        # daca este spatiu, tab sau new line, sarim peste
+        if char in ' \t\n':
+            if char == '\n':
+                line_number += 1
+            position += 1
+            continue
+
+        # verificam daca e identificator sau keyword
+        if is_alpha(char):
+            token, position, token_type = extract_identifier_or_keyword(file_content, position)
+
+        # verificam tipul de numar (int sau float)
+        elif (is_digit(char) or
+              (char == '-' and position + 1 < len(file_content)
+               and is_digit(file_content[position + 1]))):
+            token, position, token_type = extract_number(file_content, position)
+
+        # verificam daca e string/char literal
+        elif char in "'" or char in '"':
+            token, position, token_type, line_number = extract_string_or_char_literal(file_content, position, line_number)
+
+        # verificam daca e comentariu sau op. de impartire
+        elif char == '/':
+            token, position, token_type, line_number = extract_comment_or_divide(file_content, position, line_number)
+
+        # tratam operatorii complecsi <<= >>=
+        elif char == '<':
+            if position + 1 < len(file_content) and file_content[position + 1] == '<':
+                if position + 2 < len(file_content) and file_content[position + 2] == '=':
+                    token, position, token_type = char + '<=', position + 3, 'complex operator'
+
+        elif char == '>':
+            if position + 1 < len(file_content) and file_content[position + 1] == '>':
+                if position + 2 < len(file_content) and file_content[position + 2] == '=':
+                    token, position, token_type = char + '>=', position + 3, 'complex operator'
+
+        elif is_operator(char):
+            # daca avem 2 operatori consectivi
+            if char + file_content[position + 1:position + 2] in complex_operators:
+                token = char + file_content[position + 1:position + 2]
+                position += 2
+                token_type = 'complex operator'
+            else:
+                token, position, token_type = char, position + 1, 'operator'
+
+        elif is_separator(char):
+            token, position, token_type = char, position + 1, 'separator'
+
+        else:
+            token, position, token_type = char, position + 1, 'error'
+
+        return token, token_type, len(token), line_number, position
+    return "", "''", 0, line_number, position
+
+if __name__ == "__main__":
+    with open('input.txt', 'r') as file:
+        file_content = file.read()
+        line_number = 1
+        position = 0
+        while position < len(file_content):
+            token, token_type, length, line_number, position = lexical_analyzer(file_content, line_number, position)
+            if token != '':
+                print(f"'{token}', {token_type}; {length}; line {line_number}")
+
+# modificari dupa prezentare:
+        # 1. am tratat cazurile pentru operatorii complecsi: <<= si >>=
+        # 2. am verificat daca literalii pe linii multiple contin operatorul \ la finalul randului
+        # 3. tokenii nu mai sunt pusi intr-o lista, ci sunt direct returnati de functia lexical_analyzer

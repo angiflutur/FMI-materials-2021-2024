@@ -1,0 +1,60 @@
+%{
+#include <string.h>
+void printToken(char *tip_token) {
+    printf("'%s', %s; line %d\n", yytext, tip_token, yylineno);
+}
+%}
+
+%option yylineno
+%option noyywrap
+
+/* definitii */
+DIGIT [0-9]
+IDENTIFIER [a-z][a-z0-9]*
+KEYWORD ("auto"|"break"|"case"|"char"|"const"|"continue"|"default"|"do"|"double"|"else"|"enum"|"extern"|"float"|"for"|"goto"|"if"|"int"|"long"|"register"|"return"|"short"|"signed"|"sizeof"|"static"|"struct"|"switch"|"typedef"|"union"|"unsigned"|"void"|"volatile"|"while"|"main")
+COMPLEX_OPERATOR ("++"|"--"|"+="|"-="|"*="|"/="|"%="|"=="|"!="|"<="|">="|"&&"|"||"|"<<"|">>"|"->"|"&="|"|="|"^="|"<<="|">>=")
+SEPARATOR (";"|","|"("|")"|"["|"]"|"{"|"}")
+OPERATOR ("+"|"-"|"*"|"/"|"%"|">"|"<"|"&"|"|"|"^"|"?"|":")
+
+%%
+ /* reguli */
+ /* . se potriveste cu orice caracter, in afara de \n*/
+"//".* printf("single_line_comment");
+
+"/*"([^*/])*"*/" printToken("multi_line_comment");
+
+\"([^\"\n]|\\(.|\n))*\" printToken("string_literal");
+
+\'([^\'\n])*\' printToken("char_literal");
+
+{DIGIT}+ printToken("int_constant");
+
+{DIGIT}+"."{DIGIT}* printToken("float_constant");
+
+{DIGIT}+(".")?{DIGIT}*("e"|"E")("+"|"-")?{DIGIT}+ printToken("float_constant_with_exponent");
+
+{KEYWORD} printToken("keyword");
+
+{IDENTIFIER} printToken("identifier");
+
+{SEPARATOR} printToken("separator");
+
+{COMPLEX_OPERATOR} printToken("complex_operator");
+
+{OPERATOR} printToken("operator");
+
+ /* daca este spatiu, tab sau new line, sarim peste */
+[ \t\n]+ 
+. printToken("error");  
+
+%%
+
+/* cod utilizator */
+int main(int argc, char **argv)
+{
+    yyin = fopen( argv[1], "r" );
+    yylex();
+    return 0;
+    //dragulicid@yahoo.com
+    
+}
