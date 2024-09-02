@@ -37,7 +37,6 @@
 ##
 ### <u>Anul 3: </u>
 - **Semestrul 1:**
-  
     	* **[Inginerie Software - IS](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Inginerie%20Software)**
 	* **[Securitatea Sistemelor Informatice - SSI](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Securitatea%20Sistemelor%20Informatice)**
 	* **[Calculabilitate și Complexitate - CC](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Calculabilitate%26Complexitate)**
