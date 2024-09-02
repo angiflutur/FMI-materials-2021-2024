@@ -37,6 +37,7 @@
 ##
 ### <u>Anul 3: </u>
 - **Semestrul 1:**
+  
     	* **[Inginerie Software - IS](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Inginerie%20Software)**
 	* **[Securitatea Sistemelor Informatice - SSI](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Securitatea%20Sistemelor%20Informatice)**
 	* **[Calculabilitate și Complexitate - CC](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%201/Calculabilitate%26Complexitate)**
@@ -48,4 +49,4 @@
 	* **[Fundamentele proiectării compilatoarelor - FPC](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%202/Fundamentele%20Proiectarii%20Compilatoarelor)**
 	* **[Elemente de securitate și logică aplicată - ESLA](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%202/Elemente%20de%20securitate%20%C8%99i%20logic%C4%83%20aplicat%C4%83)**
 	* **[Programarea aplicatiilor Mobile Cross Platform - React Native](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%202/React%20Native)**
-
+##
