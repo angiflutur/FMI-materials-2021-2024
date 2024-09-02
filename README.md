@@ -28,7 +28,7 @@
 	
 - **Semestrul 2:**
 	* **[Algoritmi Avansați - AA](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%202/Algoritmi%20Avansati)**
-	* **[Fundamentele Limbajelor de Programare - PAO](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%202/Fundamentele%20Limbajelor%20de%20Programare)**
+	* **[Fundamentele Limbajelor de Programare - FLP](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%202/Fundamentele%20Limbajelor%20de%20Programare)**
 	* **[Inteligență Artificială - IA](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%202/Inteligenta%20Artificiala)**
 	* **[Metode de Dezvoltare Software - MDS](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%202/Metode%20de%20Dezvoltare%20Software/Curs)**
 	* **[Programare Avansată pe Obiecte - PAO](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%202/Semestrul%202/Programare%20Avansata%20pe%20Obiecte)**
@@ -48,4 +48,4 @@
 	* **[Fundamentele proiectării compilatoarelor - FPC](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%202/Fundamentele%20Proiectarii%20Compilatoarelor)**
 	* **[Elemente de securitate și logică aplicată - ESLA](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%202/Elemente%20de%20securitate%20%C8%99i%20logic%C4%83%20aplicat%C4%83)**
 	* **[Programarea aplicatiilor Mobile Cross Platform - React Native](https://github.com/angiflutur/FMI-materials-2021-2024/tree/main/Anul%203/Semestrul%202/React%20Native)**
-##
+
