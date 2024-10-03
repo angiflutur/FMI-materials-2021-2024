@@ -1,0 +1,242 @@
+
+
+spiegel.de
+tracing 128.65.210.8 .
+rt - 192.168.1.1 -bogon
+rt - 10.0.0.1 -bogon
+rt - 10.30.1.17 -bogon
+rt - 10.220.155.196 -bogon
+rt - 10.220.187.203 -bogon
+rt - 80.81.193.218 -ipv4.de-cix2.fra.de.as34309.link11.de city:Seligenstadt region:Hesse country:DE
+rt - 10.254.118.1 -bogon
+rt - 80.95.144.129 - city:Frankfurt am Main region:Hesse country:DE
+rt - 80.95.144.129 - city:Frankfurt am Main region:Hesse country:DE
+
+
+spiegel.de
+
+
+hotnews.ro
+tracing 34.111.10.146 .
+rt - 192.168.1.1 -bogon
+rt - 10.0.0.1 -bogon
+rt - 10.30.1.17 -bogon
+rt - 10.220.155.196 -bogon
+rt - 10.220.177.110 -bogon
+rt - 209.85.168.182 - city:Budapest region:Budapest country:HU
+rt - 172.253.51.33 - city:Budapest region:Budapest country:HU
+rt - 142.251.65.223 - city:Budapest region:Budapest country:HU
+rt - 34.111.10.146 -146.10.111.34.bc.googleusercontent.com city:Kansas City region:Missouri country:US
+
+
+google.cn
+tracing 142.251.208.131 .
+rt - 192.168.1.1 -bogon
+rt - 10.0.0.1 -bogon
+rt - 10.30.1.17 -bogon
+rt - 10.220.155.196 -bogon
+rt - 10.220.153.18 -bogon
+rt - 209.85.168.182 - city:Budapest region:Budapest country:HU
+rt - 74.125.242.225 - city:Budapest region:Budapest country:HU
+rt - 142.251.228.26 - city:Frankfurt am Main region:Hesse country:DE
+rt - 142.251.208.131 -bud02s42-in-f3.1e100.net city:Budapest region:Budapest country:HU
+
+
+stuff.co.nz
+tracing 54.192.235.4 .
+rt - 192.168.1.1 -bogon
+rt - 10.0.0.1 -bogon
+rt - 10.30.1.17 -bogon
+rt - 10.220.155.196 -bogon
+rt - 10.220.186.113 -bogon
+rt - 99.82.182.40 - city:Bucharest region:București country:RO
+rt - 150.222.117.55 - city:Bucharest region:București country:RO
+rt - 150.222.117.1 - city:Bucharest region:București country:RO
+rt - 54.192.235.4 -server-54-192-235-4.otp50.r.cloudfront.net city:Bucharest region:București country:RO
+
+
+nation.co.ke
+tracing 82.112.114.21 .
+rt - 192.168.1.1 -bogon
+rt - 10.0.0.1 -bogon
+rt - 10.30.1.17 -bogon
+rt - 10.220.155.196 -bogon
+rt - 10.220.187.203 -bogon
+rt - 149.11.160.57 -be5451.202.rcr21.b015533-1.lon13.atlas.cogentco.com city:London region:England country:GB
+rt - 62.115.122.188 -ldn-bb1-link.ip.twelve99.net city:London region:England country:GB
+rt - 130.117.50.6 -be2440.agr21.ams03.atlas.cogentco.com city:Amsterdam region:North Holland country:NL
+rt - 154.54.59.185 -be3463.ccr52.vie01.atlas.cogentco.com city:Vienna region:Vienna country:AT
+rt - 130.117.15.130 -ntt.ams03.atlas.cogentco.com city:Amsterdam region:North Holland country:NL
+rt - 129.250.7.20 -ae-1.r21.vienat02.at.bb.gin.ntt.net city:Vienna region:Vienna country:AT
+rt - 129.250.3.213 -ae-0.a02.londen12.uk.bb.gin.ntt.net city:Brentford region:England country:GB
+
+
+asahi.com
+tracing 104.103.85.85 .
+rt - 192.168.1.1 -bogon
+rt - 10.0.0.1 -bogon
+rt - 10.30.1.17 -bogon
+rt - 10.220.155.196 -bogon
+rt - 10.220.187.196 -bogon
+rt - 213.19.208.209 -lag-111.ear5.amsterdam1.level3.net city:Amsterdam region:North Holland country:NL
+rt - 4.69.162.181 -ae2.3204.edge7.amsterdam1.level3.net city:Frankfurt am Main region:Hesse country:DE
+rt - 23.210.52.50 -ae11.r02.fra02.icn.netarch.akamai.com city:Frankfurt am Main region:Hesse country:DE
+rt - 23.210.55.40 -ae2.r02.ams01.icn.netarch.akamai.com city:Amsterdam region:North Holland country:NL
+rt - 95.100.192.138 -ae5.r01.fra03.icn.netarch.akamai.com city:Frankfurt am Main region:Hesse country:DE
+rt - 95.100.192.167 -ae0.r02.fra03.icn.netarch.akamai.com city:Frankfurt am Main region:Hesse country:DE
+rt - 95.100.192.143 -ae3.r01.vie01.icn.netarch.akamai.com city:Frankfurt am Main region:Hesse country:DE
+rt - 23.210.60.131 -ae3.vix-vie3.netarch.akamai.com city:Vienna region:Vienna country:AT
+
+
+tribuneindia.com
+tracing 104.22.50.224 .
+rt - 192.168.1.1 -bogon
+rt - 10.0.0.1 -bogon
+rt - 10.30.1.17 -bogon
+rt - 10.220.155.196 -bogon
+rt - 10.220.184.205 -bogon
+rt - 86.120.70.185 -86-120-70-185.rdsnet.ro city:Bucharest region:București country:RO
+rt - 104.22.50.224 - city:San Francisco region:California country:US
+
+
+rtve.es
+tracing 185.61.82.81 .
+rt - 192.168.1.1 -bogon
+rt - 10.0.0.1 -bogon
+rt - 10.30.1.17 -bogon
+rt - 10.220.155.196 -bogon
+rt - 10.220.187.205 -bogon
+rt - 80.249.208.236 -et-0-0-1-pr2.ams.router.colt.net city:Amsterdam region:North Holland country:NL
+rt - 212.74.74.98 - city:Madrid region:Madrid country:ES
+rt - 212.74.74.98 - city:Madrid region:Madrid country:ES
+rt - 213.86.185.54 - city:Madrid region:Madrid country:ES
+rt - 185.61.82.254 - city:Madrid region:Madrid country:ES
+
+
+iol.co.za
+tracing 188.114.97.8 .
+rt - 192.168.1.1 -bogon
+rt - 10.0.0.1 -bogon
+rt - 10.30.1.17 -bogon
+rt - 10.220.155.196 -bogon
+rt - 10.220.184.205 -bogon
+rt - 86.120.70.185 -86-120-70-185.rdsnet.ro city:Bucharest region:București country:RO
+rt - 188.114.97.8 - city:San Francisco region:California country:US
+
+
+baidu.com
+tracing 39.156.66.10 .
+rt - 192.168.1.1 -bogon
+rt - 10.0.0.1 -bogon
+rt - 10.30.1.17 -bogon
+rt - 10.220.155.196 -bogon
+rt - 10.220.187.203 -bogon
+rt - 195.66.226.5 - city:London region:England country:GB
+rt - 223.120.10.85 - city:Frankfurt am Main region:Hesse country:DE
+rt - 223.120.15.6 - city:London region:England country:GB
+rt - 223.120.22.18 - city:Hong Kong region:Central and Western country:HK
+rt - 221.183.55.110 - city:Guangzhou region:Guangdong country:CN
+rt - 221.183.46.250 - city:Beijing region:Beijing country:CN
+rt - 221.183.89.98 - city:Guangzhou region:Guangdong country:CN
+rt - 221.183.49.126 - city:Beijing region:Beijing country:CN
+rt - 111.13.188.38 - city:Beijing region:Beijing country:CN
+
+
+japantimes.co.jp
+tracing 52.198.28.166 .
+rt - 192.168.1.1 -bogon
+rt - 10.0.0.1 -bogon
+rt - 10.30.1.17 -bogon
+rt - 10.220.155.196 -bogon
+rt - 10.220.142.127 -bogon
+rt - 149.14.156.9 -be7220.202.agr41.fra03.atlas.cogentco.com city:Frankfurt am Main region:Hesse country:DE
+rt - 154.54.61.161 -be2382.ccr42.lon13.atlas.cogentco.com city:London region:England country:GB
+rt - 154.54.56.130 -be12497.ccr41.par01.atlas.cogentco.com city:Paris region:Île-de-France country:FR
+rt - 154.54.72.110 -be2779.ccr31.mrs02.atlas.cogentco.com city:Marseille region:Provence-Alpes-Côte d'Azur country:FR
+rt - 154.54.6.26 -be2900.ccr21.hkg02.atlas.cogentco.com city:Hong Kong region:Central and Western country:HK
+rt - 154.54.63.222 -be3814.rcr21.mil01.atlas.cogentco.com city:Milan region:Lombardy country:IT
+rt - 154.54.74.177 -be2865.ccr32.mrs02.atlas.cogentco.com city:Milan region:Lombardy country:IT
+rt - 52.93.35.77 - city:Hong Kong region:Central and Western country:HK
+rt - 15.230.160.57 - city:Tokyo region:Tokyo country:JP
+rt - 52.93.72.232 - city:Tokyo region:Tokyo country:JP
+rt - 52.95.31.182 - city:Tokyo region:Tokyo country:JP
+rt - 52.93.72.125 - city:Tokyo region:Tokyo country:JP
+rt - 15.230.154.199 - city:Tokyo region:Tokyo country:JP
+rt - 52.93.72.221 - city:Tokyo region:Tokyo country:JP
+rt - 15.230.129.72 - city:Tokyo region:Tokyo country:JP
+
+
+elheraldo.co
+tracing 169.48.223.138 .
+rt - 192.168.1.1 -bogon
+rt - 10.0.0.1 -bogon
+rt - 10.30.1.17 -bogon
+rt - 10.220.155.196 -bogon
+rt - 10.220.187.200 -bogon
+rt - 80.81.194.244 -bbr01.eq01.fra03.networklayer.com city:Frankfurt am Main region:Hesse country:DE
+rt - 169.53.16.34 -22.10.35a9.ip4.static.sl-reverse.com city:Frankfurt am Main region:Hesse country:DE
+rt - 50.97.17.242 -ae3.cbs02.eq01.wdc02.networklayer.com city:Washington region:Washington, D.C. country:US
+rt - 50.97.17.142 -ae7.cbs01.eq01.wdc02.networklayer.com city:Washington region:Washington, D.C. country:US
+rt - 50.97.17.165 -ae1.cbs01.tl01.atl01.networklayer.com city:East Point region:Georgia country:US
+rt - 169.45.18.35 -23.12.2da9.ip4.static.sl-reverse.com city:Addison region:Texas country:US
+rt - 169.47.118.143 -8f.76.2fa9.ip4.static.sl-reverse.com city:Dallas region:Texas country:US
+rt - 169.47.118.169 -a9.76.2fa9.ip4.static.sl-reverse.com city:Dallas region:Texas country:US
+
+
+lemonde.fr
+tracing 151.101.2.137 .
+rt - 192.168.1.1 -bogon
+rt - 10.0.0.1 -bogon
+rt - 10.30.1.17 -bogon
+rt - 10.220.155.196 -bogon
+rt - 10.220.187.195 -bogon
+
+
+lemonde.fr
+tracing 151.101.2.137 .
+rt - 192.168.1.1 -bogon
+rt - 10.0.0.1 -bogon
+rt - 10.30.1.17 -bogon
+rt - 10.220.155.196 -bogon
+rt - 10.220.187.195 -bogon
+
+
+fijivillage.com
+tracing 66.165.237.172 .
+rt - 192.168.1.1 -bogon
+rt - 10.0.0.1 -bogon
+rt - 10.30.1.17 -bogon
+rt - 10.220.155.196 -bogon
+rt - 10.220.187.203 -bogon
+rt - 184.104.198.225 -port-channel17.core2.lax1.he.net city:Los Angeles region:California country:US
+rt - 10.253.1.2 -bogon
+rt - 66.165.237.172 -66-165-237-172.static.hvvc.us city:Los Angeles region:California country:US
+
+
+aljazeera.com
+tracing 13.50.11.102 .
+rt - 192.168.1.1 -bogon
+rt - 10.0.0.1 -bogon
+rt - 10.30.1.17 -bogon
+rt - 10.220.155.196 -bogon
+rt - 10.220.186.117 -bogon
+rt - 99.82.182.40 - city:Bucharest region:București country:RO
+rt - 150.222.117.59 - city:Bucharest region:București country:RO
+rt - 150.222.117.40 - city:Bucharest region:București country:RO
+rt - 52.93.143.140 - city:Stockholm region:Stockholm country:SE
+rt - 52.93.145.19 - city:Stockholm region:Stockholm country:SE
+rt - 52.93.145.16 - city:Stockholm region:Stockholm country:SE
+rt - 52.93.145.253 - city:Stockholm region:Stockholm country:SE
+rt - 52.93.142.140 - city:Stockholm region:Stockholm country:SE
+
+
+corriere.it
+tracing 185.53.36.36 .
+rt - 192.168.1.1 -bogon
+rt - 10.0.0.1 -bogon
+rt - 10.30.1.17 -bogon
+rt - 10.220.155.196 -bogon
+rt - 10.220.187.187 -bogon
+rt - 80.81.193.61 -te0-0-0-0-pr2.fra.router.colt.net city:Seligenstadt region:Hesse country:DE
+rt - 193.114.161.163 - city:Milan region:Lombardy country:IT
+rt - 212.31.224.162 -cpeit_trn000320.ia.colt.net city:Milan region:Lombardy country:IT

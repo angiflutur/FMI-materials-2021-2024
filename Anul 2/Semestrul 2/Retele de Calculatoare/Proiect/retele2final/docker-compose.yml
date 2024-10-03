@@ -1,0 +1,15 @@
+version: '3'
+services:
+  dns:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python dns.py --network dns_network
+    image: imagine2
+    network_mode: host
+    networks:
+      - dns_network
+
+networks:
+  dns_network:
+

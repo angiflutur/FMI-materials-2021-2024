@@ -1,0 +1,24 @@
+Număr de domenii blocate care conțin 'google': 4
+Număr de domenii blocate care conțin 'facebook': 0
+Cele mai frecvente companii blocate:
+adservice.google.com - 1
+doubleclick.net - 1
+i.connatix.com - 1
+incoming.telemetry.mozilla.org - 1
+googlesyndication.com - 1
+ad-delivery.net - 1
+b.scorecardresearch.com - 1
+revcontent.com - 1
+google-analytics.com - 1
+googletagmanager.com - 1
+bid.pubmatic.com - 1
+tlx.3lift.com - 1
+bidder.criteo.com - 1
+b.casalemedia.com - 1
+fastlane.rubiconproject.com - 1
+static.criteo.net - 1
+ad.doubleclick.net - 1
+token.rubiconproject.com - 1
+eus.rubiconproject.com - 1
+u.openx.net - 1
+x.bidswitch.net - 1
