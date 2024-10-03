@@ -1,4 +1,4 @@
-﻿namespace proiect.Models
+namespace proiect.Models
 {
     public class Actor_Film
     {

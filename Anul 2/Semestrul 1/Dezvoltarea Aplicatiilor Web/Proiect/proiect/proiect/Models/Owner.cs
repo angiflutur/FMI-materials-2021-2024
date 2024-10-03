@@ -1,4 +1,4 @@
-﻿using proiect.Models.Base;
+using proiect.Models.Base;
 using proiect.Models.Enums;
 using System.Data;
 using System.Text.Json.Serialization;

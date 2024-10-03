@@ -1,4 +1,4 @@
-﻿using proiect.Data;
+using proiect.Data;
 using proiect.Models;
 using proiect.Repositories.GenericRepository;
 using Microsoft.EntityFrameworkCore;

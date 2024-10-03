@@ -1,4 +1,4 @@
-﻿namespace proiect.Models.Base
+namespace proiect.Models.Base
 {
     public interface IBaseEntity
     {

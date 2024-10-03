@@ -1,4 +1,4 @@
-﻿namespace proiect.Data.Enums
+namespace proiect.Data.Enums
 {
     public enum CategorieFilm
     {

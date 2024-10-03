@@ -1,4 +1,4 @@
-﻿namespace proiect.Models.Enums
+namespace proiect.Models.Enums
 {
     public enum Role
     {

@@ -1,4 +1,4 @@
-﻿namespace proiect.Services
+namespace proiect.Services
 {
     public class IActorService
     {

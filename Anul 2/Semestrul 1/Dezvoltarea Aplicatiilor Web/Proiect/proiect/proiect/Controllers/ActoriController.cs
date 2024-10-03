@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using proiect.Data;
 using proiect.Models; // Asigurați-vă că aveți importat corect namespace-ul pentru modelul Actor

@@ -1,4 +1,4 @@
-﻿using proiect.Data.Enums;
+using proiect.Data.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

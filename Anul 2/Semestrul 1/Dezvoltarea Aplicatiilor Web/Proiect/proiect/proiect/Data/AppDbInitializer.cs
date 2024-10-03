@@ -1,4 +1,4 @@
-﻿using proiect.Models;
+using proiect.Models;
 
 namespace proiect.Data
 {
