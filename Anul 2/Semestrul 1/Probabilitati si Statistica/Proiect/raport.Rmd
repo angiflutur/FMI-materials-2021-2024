@@ -1,0 +1,2802 @@
+---
+title: "Repartitii Discrete si Continue"
+author: "Flutur Angelica-Costela, Monete Andreea-Maria"
+date: "2023-02-05"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introducere
+
+O repartitie discreta a probabilitatii este o repartitie pe o multime numarabila de valori.
+O repartitie continua a probabilitatii este o repartitie pe o multime nenumarabila.
+
+Acest proiect ilustreaza 15 repartitii discrete si continue si cum pot fi utilizate in calcul. Acesta foloseste numeroase functii predefinite in R pentru a ilustra grafic densitatea (functia de masa) si functia de repartitie.
+
+Repartitiile ilustrate sunt:
+
+ - Normala
+ - Beta
+ - Chi-Square
+ - Exponentiala
+ - Fisher
+ - Cauchy
+ - Student
+ - Uniforma
+ - Gamma
+ - Log Normala
+ - Weibull
+ - Binomiala
+ - Poisson
+ - Geometrica
+ - Logistic
+
+
+## Implementarea aplicatiei
+
+Utilizatorul poate alege tipul de repartitie pe care doreste sa il ilustreze cu ajutorul unui panel care cuprinde cate un tabPanel pentru fiecare repartitie.
+
+Fiecare repartitie are casete de input pentru parametrii reprezentativi. Putem calcula probabilitati de tipul P(X<=a), P(X>=b) sau P(a<=X<=b) pentru valorile selectate pentru a si b.
+
+```
+ui <- fluidPage(tabsetPanel(
+  #rep norm
+  tabPanel(
+    title = "Reparitie Normala",
+    sliderInput(inputId = "limite_norm", label = "Limite:", min = 1, max = 500, value = 100),
+    numericInput(inputId = "medie_norm", label = "Medie:", min = -100, max = 200, value = 0),
+    numericInput(inputId = "sd_norm", label = "Deviatia standard:", min = 0, max = 200, value = 1),
+    selectInput("probNorm", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probNorm == 'P(X<=a)'",
+      numericInput("a_norm", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probNorm == 'P(X>=a)'",
+      numericInput("b_norm", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probNorm == 'P(a<=X<=b)'",
+      numericInput("aa_norm", "a:", value=0),
+      numericInput("bb_norm", "b:", value=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultnorm"),
+    plotOutput("fctmasanorm"),
+    plotOutput("cdfnorm"),
+    plotOutput("resultPlotnorm")),
+    ...
+```
+
+In continuare, in "server" sunt cuprinse functiile prin care sunt trasate graficele. Acestea au fost implementate cu ajutorul apelului unor functii care calculeaza repartitiile si probabilitatile in functie de datele primite din input.
+
+Functia "fctmasa_nume" calculeaza densitatea in cazul unei repartitii continue si functia de masa in cazul unei repartitii discrete.
+
+Functia "cdf_nume" calculeaza functia de repartitie.
+
+Graficele sunt create cu ajutorul functiei plot().
+
+Pentru hasurarea suprafetei graficului, a fost folosita functia polygon() pentru generarea unui poligon peste grafic.
+```
+server <- function(input, output, session) {
+  #normala
+  output$fctmasanorm <- renderPlot({
+    x <- seq(-input$limite_norm, input$limite_norm)
+    plot(x, dnorm(x, mean = input$medie_norm, sd = input$sd_norm), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Densitatea repartitiei normale")
+    abline(v=input$medie_norm,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfnorm <- renderPlot({
+    x <- seq(-input$limite_norm, input$limite_norm)
+    fun <- pnorm(x, mean = input$medie_norm, sd = input$sd_norm)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultnorm<-renderText({
+    switch(input$probNorm,
+           'P(X<=a)' = pnorm(input$a_norm,mean=input$medie_norm,sd=input$sd_norm),
+           'P(X>=a)' = 1 -  pnorm(input$b_norm,mean=input$medie_norm,sd=input$sd_norm),
+           'P(a<=X<=b)' =  pnorm(input$bb_norm,mean=input$medie_norm,sd=input$sd_norm) -  pnorm(input$aa_norm,mean=input$medie_norm,sd=input$sd_norm)
+    )
+  })
+  output$resultPlotnorm<-renderPlot({
+    x <- seq(-input$limite_norm, input$limite_norm)
+    A<-input$a_norm
+    B<-input$b_norm
+    AA<-input$aa_norm
+    BB<-input$bb_norm
+    dens<-dnorm(x,mean=input$medie_norm,sd= input$sd_norm)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probNorm,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_norm & x<=input$bb_norm], input$bb_norm, input$aa_norm),
+                     c(dens[x>=input$aa_norm & x<=input$bb_norm], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+```
+
+Aplicatia ruleaza cu ajutorul comandei urmatoare:
+
+```
+# Run the app ----
+shinyApp(ui = ui, server = server)
+```
+
+## Aplicatia
+
+```
+library(shiny)
+# Define UI ----
+ui <- fluidPage(tabsetPanel(
+  #rep norm
+  tabPanel(
+    title = "Reparitie Normala",
+    sliderInput(inputId = "limite_norm", label = "Limite:", min = 1, max = 500, value = 100),
+    numericInput(inputId = "medie_norm", label = "Medie:", min = -100, max = 200, value = 0),
+    numericInput(inputId = "sd_norm", label = "Deviatia standard:", min = 0, max = 200, value = 1),
+    selectInput("probNorm", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probNorm == 'P(X<=a)'",
+      numericInput("a_norm", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probNorm == 'P(X>=a)'",
+      numericInput("b_norm", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probNorm == 'P(a<=X<=b)'",
+      numericInput("aa_norm", "a:", value=0),
+      numericInput("bb_norm", "b:", value=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultnorm"),
+    plotOutput("fctmasanorm"),
+    plotOutput("cdfnorm"),
+    plotOutput("resultPlotnorm")),
+  
+  
+  #rep beta
+  tabPanel(
+    title = "Repartitie Beta",
+    sliderInput(inputId = "alpha", label = "Alege Alpha: ", min = 0, max = 10, value = 1),
+    sliderInput(inputId = "beta", label = "Alege Beta: ", min = 0, max = 10, value = 1),
+    
+    selectInput("probBeta", "Alege probabilitatea:",
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probBeta == 'P(X<=a)'",
+      sliderInput("a_beta", "a:",min=0,max=1, value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probBeta == 'P(X>=a)'",
+      sliderInput("b_beta", "a:",min=0,max=1, value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probBeta == 'P(a<=X<=b)'",
+      sliderInput("aa_beta", "a:",min=0,max=1, value=0),
+      sliderInput("bb_beta", "b:",min=0,max=1, value=0)
+    )
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultbeta"),
+    plotOutput("fctmasabeta"),
+    plotOutput("cdfbeta"),
+    plotOutput("resultPlotbeta"))
+  ,
+  
+  
+  
+  
+  #chi-square
+  tabPanel(
+    title = "Reparitie Chi-Square",
+    sliderInput(inputId = "limite_chi", label = "Limite:", min = 10, max = 100, value = 30),
+    sliderInput(inputId = "df_chi", label = "Grad de libertate:", min = 0, max = 20, value = 3, step=0.1),
+    selectInput("probChi", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probChi == 'P(X<=a)'",
+      numericInput("a_chi", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probChi == 'P(X>=a)'",
+      numericInput("b_chi", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probChi == 'P(a<=X<=b)'",
+      numericInput("aa_chi", "a:", value=0),
+      numericInput("bb_chi", "b:", value=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultchi"),
+    plotOutput("fctmasachi"),
+    plotOutput("cdfchi"),
+    plotOutput("resultPlotchi")),
+  
+  
+  
+  #exponentiala
+  tabPanel(
+    title = "Repartitie Exponentiala",
+    numericInput(inputId = "nr_expexp", label = "Nr exp:", min = 1, max = 100, value = 1),
+    sliderInput(inputId = "rata", label = "Rata", min = 0, max = 1, value = 1),
+    selectInput("probExp", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probExp == 'P(X<=a)'",
+      numericInput("a_exp", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probExp == 'P(X>=a)'",
+      numericInput("b_exp", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probExp == 'P(a<=X<=b)'",
+      numericInput("aa_exp", "a:", value=0,min=0),
+      numericInput("bb_exp", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultexp"),
+    plotOutput("fctmasaexp"),
+    plotOutput("cdfexp"),
+    plotOutput("resultPlotexp")),
+  
+  
+  #fisher  
+  tabPanel(
+    title = "Repartitie Fisher",
+    sliderInput(inputId ="df1_fish", label = "Alege gradul de libertate 1", min = 0, max = 50, value = 1),
+    sliderInput(inputId ="df2_fish", label = "Alege gradul de libertate 2", min = 0, max = 50, value = 1),
+    selectInput("probFish", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probFish == 'P(X<=a)'",
+      numericInput("a_fish", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probFish == 'P(X>=a)'",
+      numericInput("b_fish", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probFish == 'P(a<=X<=b)'",
+      numericInput("aa_fish", "a:", value=0,min=0),
+      numericInput("bb_fish", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultfish"),
+    plotOutput("fctmasafish"),
+    plotOutput("cdffish"),
+    plotOutput("resultPlotfish")
+  ),
+  
+  #cauchy
+  tabPanel(
+    title = "Repartitie Cauchy",
+    sliderInput(inputId = "nr_cauchy", label = "Nr exp:",min = 20, max = 100, value = 20),
+    sliderInput(inputId ="loc_cauchy", label = "Punctul de varf:", min = -10, max = 10, value = 0),
+    sliderInput(inputId ="scale_cauchy", label = "Scala:", min = 0, max = 10, value =   5),
+    selectInput("probCauchy", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probCauchy == 'P(X<=a)'",
+      numericInput("a_Cauchy", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probCauchy == 'P(X>=a)'",
+      numericInput("b_Cauchy", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probCauchy == 'P(a<=X<=b)'",
+      numericInput("aa_Cauchy", "a:", value=0,min=0),
+      numericInput("bb_Cauchy", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultCauchy"),
+    plotOutput("fctmasaCauchy"),
+    plotOutput("cdfCauchy"),
+    plotOutput("resultPlotCauchy")
+  ),
+  
+  #student  
+  tabPanel(
+    title = "Reparitie Student",
+    sliderInput(inputId = "limite_stud", label = "Limite:", min = 10, max = 50, value = 20),
+    sliderInput(inputId = "stud_df", label = "Grad de libertate:", min = 0, max = 10, value = 3, step=0.1),
+    selectInput("probStud", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probStud == 'P(X<=a)'",
+      numericInput("a_Stud", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probStud == 'P(X>=a)'",
+      numericInput("b_Stud", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probStud == 'P(a<=X<=b)'",
+      numericInput("aa_Stud", "a:", value=0,min=0),
+      numericInput("bb_Stud", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultStud"),
+    plotOutput("fctmasaStud"),
+    plotOutput("cdfStud"),
+    plotOutput("resultPlotStud")
+  ),
+  
+  #logistic
+  tabPanel(
+    title = "Reparitie Logistic",
+    numericInput("log","Loc: ", value = 1),
+    numericInput("scale_log","Scale: ", value = 1),
+    selectInput("probLog", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probLog == 'P(X<=a)'",
+      numericInput("a_Log", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probLog == 'P(X>=a)'",
+      numericInput("b_Log", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probLog == 'P(a<=X<=b)'",
+      numericInput("aa_Log", "a:", value=0,min=0),
+      numericInput("bb_Log", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultLog"),
+    plotOutput("fctmasaLog"),
+    plotOutput("cdfLog"),
+    plotOutput("resultPlotLog")
+  ),
+  
+  #unif
+  tabPanel(
+    title = "Reparitie Uniforma Continua",
+    sliderInput(inputId ="min_unif", label = "Alege min:", min = 0, max = 20, value = 5),
+    sliderInput(inputId ="max_unif", label = "Alege max:", min = 0, max = 20, value = 15),
+    selectInput("probUnif", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probUnif == 'P(X<=a)'",
+      numericInput("a_Unif", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probUnif == 'P(X>=a)'",
+      numericInput("b_Unif", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probUnif == 'P(a<=X<=b)'",
+      numericInput("aa_Unif", "a:", value=0,min=0),
+      numericInput("bb_Unif", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultUnif"),
+    plotOutput("fctmasaUnif"),
+    plotOutput("cdfUnif"),
+    plotOutput("resultPlotUnif")
+    
+  ),
+  
+  #gamma  
+  tabPanel(
+    title = "Repartitie Gamma",
+    numericInput(inputId = "shape_gamma", label = "Shape : ", min = 0, value = 1),
+    numericInput(inputId = "rata_gamma", label = "Rata: ", min = 1, value = 1),
+    selectInput("probGamma", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probGamma == 'P(X<=a)'",
+      numericInput("a_Gamma", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probGamma == 'P(X>=a)'",
+      numericInput("b_Gamma", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probGamma == 'P(a<=X<=b)'",
+      numericInput("aa_Gamma", "a:", value=0,min=0),
+      numericInput("bb_Gamma", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultGamma"),
+    plotOutput("fctmasaGamma"),
+    plotOutput("cdfGamma"),
+    plotOutput("resultPlotGamma")
+  ),
+  
+  
+  #log-normala
+  tabPanel(
+    title = "Reparitie Log Normala",
+    sliderInput(inputId = "logn_medie", label = "Medie:", min = 0, max = 200, value = 50),
+    sliderInput(inputId = "logn_dev", label = "Abaterea standard:", min = 1, max = 25, value = 10, step=0.25),
+    selectInput("problogn", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.problogn == 'P(X<=a)'",
+      numericInput("a_logn", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.problogn == 'P(X>=a)'",
+      numericInput("b_logn", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.problogn == 'P(a<=X<=b)'",
+      numericInput("aa_logn", "a:", value=0,min=0),
+      numericInput("bb_logn", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultlogn"),
+    plotOutput("fctmasalogn"),
+    plotOutput("cdflogn"),
+    plotOutput("resultPlotlogn")
+  ),
+  
+  #weibull 
+  tabPanel(
+    title = "Repartitie Weibull",
+    sliderInput(inputId ="shape_w", label = "Alege forma:", min = 0.1, max = 10, value = 1),
+    sliderInput(inputId ="scale_w", label = "Alege scala:", min = 0.1, max = 10, value = 1),
+    selectInput("probw", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probw == 'P(X<=a)'",
+      numericInput("a_w", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probw == 'P(X>=a)'",
+      numericInput("b_w", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probw == 'P(a<=X<=b)'",
+      numericInput("aa_w", "a:", value=0,min=0),
+      numericInput("bb_w", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultw"),
+    plotOutput("fctmasaw"),
+    plotOutput("cdfw"),
+    plotOutput("resultPlotw")
+  ),
+  
+  
+  #binomiala
+  tabPanel(
+    title = "Repartitie Binomiala",
+    sliderInput(inputId = "n_bin", label = "Nr exp:", min = 1, max = 1000, value = 100),
+    sliderInput(inputId = "p_bin", label = "Alege probabilitatea", min = 0, max = 1, value = 0.5),
+    selectInput("probbin", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probbin == 'P(X<=a)'",
+      numericInput("a_bin", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probbin == 'P(X>=a)'",
+      numericInput("b_bin", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probbin == 'P(a<=X<=b)'",
+      numericInput("aa_bin", "a:", value=0,min=0),
+      numericInput("bb_bin", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultbin"),
+    plotOutput("fctmasabin"),
+    plotOutput("cdfbin"),
+    plotOutput("resultPlotbin")
+  ),
+  
+  #poisson
+  tabPanel(
+    title = "Repartitie Poisson",
+    sliderInput(inputId = "lambda", label = "Rata aparitiei: ", min = 1, max = 50, value = 10),
+    selectInput("probpoi", "Probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probpoi == 'P(X<=a)'",
+      numericInput("a_poi", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probpoi == 'P(X>=a)'",
+      numericInput("b_poi", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probpoi == 'P(a<=X<=b)'",
+      numericInput("aa_poi", "a:", value=0,min=0),
+      numericInput("bb_poi", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultpoi"),
+    plotOutput("fctmasapoi"),
+    plotOutput("cdfpoi"),
+    plotOutput("resultPlotpoi")
+  ),
+  
+  
+  #geometrica
+  tabPanel(
+    title = "Repartitie Geometrica",
+    sliderInput(inputId = "probgeom", label = "Alege probabilitatea: ", min = 0, max = 1, value = 0.5),
+    selectInput("probgeo", "Alege tipul probabilitatii:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probgeo == 'P(X<=a)'",
+      numericInput("a_geo", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probgeo == 'P(X>=a)'",
+      numericInput("b_geo", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probgeo == 'P(a<=X<=b)'",
+      numericInput("aa_geo", "a:", value=0,min=0),
+      numericInput("bb_geo", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultgeo"),
+    plotOutput("fctmasageo"),
+    plotOutput("cdfgeo"),
+    plotOutput("resultPlotgeo")
+  )
+  
+  
+)
+)
+
+# Define server logic ----
+
+
+server <- function(input, output, session) {
+  #normala
+  output$fctmasanorm <- renderPlot({
+    x <- seq(-input$limite_norm, input$limite_norm)
+    plot(x, dnorm(x, mean = input$medie_norm, sd = input$sd_norm), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Densitatea repartitiei normale")
+    abline(v=input$medie_norm,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfnorm <- renderPlot({
+    x <- seq(-input$limite_norm, input$limite_norm)
+    fun <- pnorm(x, mean = input$medie_norm, sd = input$sd_norm)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultnorm<-renderText({
+    switch(input$probNorm,
+           'P(X<=a)' = pnorm(input$a_norm,mean=input$medie_norm,sd=input$sd_norm),
+           'P(X>=a)' = 1 -  pnorm(input$b_norm,mean=input$medie_norm,sd=input$sd_norm),
+           'P(a<=X<=b)' =  pnorm(input$bb_norm,mean=input$medie_norm,sd=input$sd_norm) -  pnorm(input$aa_norm,mean=input$medie_norm,sd=input$sd_norm)
+    )
+  })
+  output$resultPlotnorm<-renderPlot({
+    x <- seq(-input$limite_norm, input$limite_norm)
+    A<-input$a_norm
+    B<-input$b_norm
+    AA<-input$aa_norm
+    BB<-input$bb_norm
+    dens<-dnorm(x,mean=input$medie_norm,sd= input$sd_norm)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probNorm,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_norm & x<=input$bb_norm], input$bb_norm, input$aa_norm),
+                     c(dens[x>=input$aa_norm & x<=input$bb_norm], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  
+  
+  #beta
+  
+  output$fctmasabeta<-renderPlot({
+    x<-seq(0,1,by=0.01)
+    plot(x,dbeta(x,input$alpha,input$beta),type="l",col="cyan3",lwd=2.5,
+         xlab="X",ylab="Fct de masa",main="Functia de masa a repartitiei beta ")
+    abline(v=input$alpha/(input$alpha+input$beta),col="cyan2",lwd=2,lty=2)
+    
+  })
+  output$cdfbeta<-renderPlot({
+    x<-seq(0,1,by=0.01)
+    plot(x,pbeta(x,input$alpha,input$beta),type="l",col="cyan3", lwd=2.5, xlab="x",ylab="CDF",
+         main="Functia de repartitie")
+  })
+  output$resultbeta<-renderText({
+    switch(input$probBeta,
+           'P(X<=a)' = pbeta(input$a_beta,input$alpha,input$beta),
+           'P(X>=a)' = 1 -  pbeta(input$b_beta,input$alpha,input$beta),
+           'P(a<=X<=b)' =  pbeta(input$bb_beta,input$alpha,input$beta) -  pbeta(input$aa_beta,input$alpha,input$beta)
+    )
+  })
+  output$resultPlotbeta<-renderPlot({
+    x<-seq(0,1,by=0.01)
+    A<-input$a_beta
+    B<-input$b_beta
+    dens<-dbeta(x,input$alpha,input$beta)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probBeta,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_beta & x<=input$bb_beta], input$bb_beta, input$aa_beta),
+                     c(dens[x>=input$aa_beta & x<=input$bb_beta], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  
+  #chi-square
+  output$fctmasachi <- renderPlot({
+    x <- seq(0, input$limite_chi, by=0.01)
+    plot(x, dchisq(x, df=input$df_chi), type="l",col="cyan3", xlab = "Valori", ylab = "Fct de masa", main = "Densitatea repartitiei Chi square")
+    abline(v=input$df_chi,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfchi <- renderPlot({
+    x <- seq(0, input$limite_chi, by=0.01)
+    plot(x, pchisq(x, df=input$df_chi), 
+         type="l",col="cyan3", xlab = "Valori", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultchi<-renderText({
+    switch(input$probChi,
+           'P(X<=a)' = pchisq(input$a_chi,input$df_chi),
+           'P(X>=a)' = 1 -  pchisq(input$a_chi,input$df_chi),
+           'P(a<=X<=b)' =  pchisq(input$bb_chi,input$df_chi) -  pchisq(input$aa_chi,input$df_chi)
+    )
+  })
+  output$resultPlotchi<-renderPlot({
+    x <- seq(0, input$limite_chi, by=0.01)
+    A<-input$a_chi
+    B<-input$b_chi
+    dens<-dchisq(x,input$df_chi)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probChi,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_chi & x<=input$bb_chi], input$bb_chi, input$aa_chi),
+                     c(dens[x>=input$aa_chi & x<=input$bb_chi], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  #exponentiala
+  output$fctmasaexp <- renderPlot({
+    x <- seq(0, input$nr_expexp,length.out=1000)
+    plot(x,dexp(x, rate=input$rata), type="l",col="cyan3", xlab = "Valori", ylab = "Fct de masa", main = "Densitatea repartitiei Exponentiala")
+    abline(v=1/input$rata,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfexp <- renderPlot({
+    x <- seq(0, input$nr_expexp)
+    plot(x, pexp(x, rate=input$rata),type="l",col="cyan3", lwd=2.5, xlab="x",ylab="CDF",
+         main="Functia de repartitie")
+  })
+  output$resultexp<-renderText({
+    switch(input$probExp,
+           'P(X<=a)' = pexp(input$a_exp,input$rata),
+           'P(X>=a)' = 1 -  pexp(input$a_exp,input$rata),
+           'P(a<=X<=b)' =  pexp(input$bb_exp,input$rata) -  pchisq(input$aa_exp,input$rata)
+    )
+  })
+  output$resultPlotexp<-renderPlot({
+    x <- seq(0, input$nr_expexp)
+    A<-input$a_exp
+    B<-input$b_exp
+    dens<-dexp(x,input$rata)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probExp,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_exp & x<=input$bb_exp], input$bb_exp, input$aa_exp),
+                     c(dens[x>=input$aa_exp & x<=input$bb_exp], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  #fisher
+  output$fctmasafish <- renderPlot({
+    x <- seq(-1*(input$df1_fish + input$df2_fish),input$df1_fish + input$df2_fish, by = 0.1)
+    plot(x, df(x, input$df1_fish, input$df2_fish), type = "l",col="cyan3", xlab ="x", ylab = "Fct masa", main = "Densitatea repartitiei Fisher")
+    abline(v=input$df2_fish/(input$df2_fish-2),col="cyan2",lwd=2,lty=2)
+  })
+  output$cdffish <- renderPlot({
+    x <- seq(-1*(input$df1_fish + input$df2_fish), input$df1_fish + input$df2_fish, by = 0.1)
+    plot(x, pf(x, input$df1_fish, input$df2_fish), type = "l",col="cyan3", xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+  })
+  output$resultfish<-renderText({
+    switch(input$probFish,
+           'P(X<=a)' = pf(input$a_fish,input$df1_fish, input$df2_fish),
+           'P(X>=a)' = 1 -  pf(input$a_fish,input$df1_fish, input$df2_fish),
+           'P(a<=X<=b)'=pf(input$bb_fish,input$df1_fish, input$df2_fish)-pf(input$aa_fish,input$df1_fish, input$df2_fish)
+    )
+  })
+  output$resultPlotfish<-renderPlot({
+    x <- seq(-1*(input$df1_fish + input$df2_fish), input$df1_fish + input$df2_fish, by = 0.1)
+    A<-input$a_fish
+    B<-input$b_fish
+    dens<-df(x,input$df1_fish,input$df2_fish)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probFish,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_fish & x<=input$bb_fish], input$bb_fish, input$aa_fish),
+                     c(dens[x>=input$aa_fish & x<=input$bb_fish], dens[x==min(x)],dens[x==min(x)]),
+                     
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  
+  #cauchy
+  
+  output$fctmasaCauchy <- renderPlot({
+    x <- seq(-1*input$nr_cauchy,input$nr_cauchy, by = 0.1)
+    plot(x, dcauchy(x,input$loc_cauchy, input$scale_cauchy), type = "l", col="cyan3",
+         xlab = "x", ylab = "Fct de masa", main = "Densitatea repartitiei Cauchy")
+  })
+  output$cdfCauchy <- renderPlot({
+    x <- seq(-1*input$nr_cauchy,input$nr_cauchy, by = 0.1)
+    fun <- pcauchy(x, input$loc_cauchy, input$scale_cauchy)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultCauchy<-renderText({
+    switch(input$probCauchy,
+           'P(X<=a)' = pnorm(input$a_Cauchy,mean=input$medie_norm,sd=input$sd_norm),
+           'P(X>=a)' = 1 -  pnorm(input$b_Cauchy,mean=input$medie_norm,sd=input$sd_norm),
+           'P(a<=X<=b)' =  pnorm(input$bb_Cauchy,mean=input$medie_norm,sd=input$sd_norm) -  pnorm(input$aa_Cauchy,mean=input$medie_norm,sd=input$sd_norm)
+    )
+  })
+  output$resultPlotCauchy<-renderPlot({
+    x <-  seq(-1*input$nr_cauchy,input$nr_cauchy, by = 0.1)
+    A<-input$a_Cauchy
+    B<-input$b_Cauchy
+    dens<-dcauchy(x,input$loc_cauchy, input$scale_cauchy)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probCauchy,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_Cauchy & x<=input$bb_Cauchy], input$bb_Cauchy, input$aa_Cauchy),
+                     c(dens[x>=input$aa_Cauchy & x<=input$bb_Cauchy], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  
+  #student
+  output$fctmasaStud <- renderPlot({
+    x <- seq(-input$limite_stud, input$limite_stud)
+    plot(x, dt(x, input$stud_df), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Densitatea repartitiei Student(de tip T)")
+    abline(v=0,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfStud <- renderPlot({
+    x <- seq(-input$limite_stud, input$limite_stud)
+    fun <- pt(x, input$stud_df)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultStud<-renderText({
+    switch(input$probStud,
+           'P(X<=a)' = pt(input$a_Stud,input$stud_df),
+           'P(X>=a)' = 1 -  pt(input$b_Stud,input$stud_df),
+           'P(a<=X<=b)' =  pt(input$bb_Stud,input$stud_df) - pt(input$aa_Stud,input$stud_df)
+    )
+  })
+  output$resultPlotStud<-renderPlot({
+    x <- seq(-input$limite_stud, input$limite_stud)
+    A<-input$a_Stud
+    B<-input$b_Stud
+    AA<-input$aa_Stud
+    BB<-input$bb_Stud
+    dens<-dt(x,input$stud_df)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probStud,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_Stud & x<=input$bb_Stud], input$bb_Stud, input$aa_Stud),
+                     c(dens[x>=input$aa_Stud & x<=input$bb_Stud], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  
+  #logistic
+  output$fctmasaLog <- renderPlot({
+    x <- seq(-2*input$log, 10*input$log)
+    plot(x, dlogis(x, input$log,input$scale_log),type="l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Densitatea repartitiei Logistic")
+    abline(v=input$log,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfLog <- renderPlot({
+    x <- seq(-2*input$log, 10*input$log)
+    fun <- plogis(x, input$log,input$scale_log)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultLog<-renderText({
+    switch(input$probLog,
+           'P(X<=a)' = plogis(input$a_Log,input$log,input$scale_log),
+           'P(X>=a)' = 1 -  plogis(input$b_Log,input$log,input$scale_log),
+           'P(a<=X<=b)' =  plogis(input$bb_Log,input$log,input$scale_log) - plogis(input$aa_Log,input$log,input$scale_log)
+    )
+  })
+  output$resultPlotLog<-renderPlot({
+    x <- seq(-2*input$log, 10*input$log)
+    A<-input$a_Log
+    B<-input$b_Log
+    dens<-dlogis(x, input$log,input$scale_log)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probLog,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_Log & x<=input$bb_Log], input$bb_Log, input$aa_Log),
+                     c(dens[x>=input$aa_Log & x<=input$bb_Log], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  #uniforma
+  output$fctmasaUnif <- renderPlot({
+    x <- seq(-5*input$min_unif,5*input$max_unif)
+    plot(x, dunif(x, input$min_unif,input$max_unif), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Densitatea repartitiei Uniforme")
+    abline(v=(input$min_unif+input$max_unif)/2,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfUnif <- renderPlot({
+    x <- seq(-5*input$min_unif,5*input$max_unif)
+    fun <- punif(x, input$min_unif,input$max_unif)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultUnif<-renderText({
+    switch(input$probUnif,
+           'P(X<=a)' = punif(input$a_Unif,input$min_unif,input$max_unif),
+           'P(X>=a)' = 1 -  punif(input$b_Unif,input$min_unif,input$max_unif),
+           'P(a<=X<=b)' =  punif(input$bb_Unif,input$min_unif,input$max_unif) - punif(input$aa_Unif,input$max_unif)
+    )
+  })
+  output$resultPlotUnif<-renderPlot({
+    x <- seq(-5*input$min_unif,5*input$max_unif)
+    A<-input$a_Unif
+    B<-input$b_Unif
+    dens<-dunif(x, input$min_unif,input$max_unif)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probUnif,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_Unif & x<=input$bb_Unif], input$bb_Unif, input$aa_Unif),
+                     c(dens[x>=input$aa_Unif & x<=input$bb_Unif], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  #gamma
+  output$fctmasaGamma <- renderPlot({
+    x <- seq(0,2*input$shape_gamma)
+    plot(x, dgamma(x, input$shape_gamma,input$rata_gamma), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Densitatea repartitiei Gamma")
+    abline(v=((input$shape_gamma)/(input$rate_gamma)),col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfGamma <- renderPlot({
+    x <- seq(0,2*input$shape_gamma)
+    fun <- pgamma(x, input$shape_gamma,input$rata_gamma)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultGamma<-renderText({
+    switch(input$probGamma,
+           'P(X<=a)' = pgamma(input$a_Gamma,input$shape_gamma,input$rata_gamma),
+           'P(X>=a)' = 1 -  pgamma(input$b_Gamma,input$shape_gamma,input$rata_gamma),
+           'P(a<=X<=b)' =  pgamma(input$bb_Gamma,input$shape_gamma,input$rata_gamma) - pgamma(input$aa_Unif,input$shape_gamma,input$rata_gamma)
+    )
+  })
+  output$resultPlotGamma<-renderPlot({
+    x <- seq(0,2*input$shape_gamma)
+    A<-input$a_Gamma
+    B<-input$b_Gamma
+    dens<-dgamma(x, input$shape_gamma,input$rata_gamma)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probGamma,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_Gamma & x<=input$bb_Gamma], input$bb_Gamma, input$aa_Gamma),
+                     c(dens[x>=input$aa_Gamma & x<=input$bb_Gamma], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  #log normala
+  output$fctmasalogn <- renderPlot({
+    x <- seq(0,20)
+    plot(x, dlnorm(x, input$logn_medie,input$logn_dev), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Densitatea repartitiei Log Normala")
+    abline(v=exp(input$logn_medie+1/2*input$logn_dev^2),col="cyan2",lwd=2,lty=2)
+  })
+  output$cdflogn <- renderPlot({
+    x <- seq(0,20)
+    fun <- plnorm(x, input$logn_medie,input$logn_dev)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultlogn<-renderText({
+    switch(input$problogn,
+           'P(X<=a)' =plnorm(input$a_logn,input$logn_medie,input$logn_dev),
+           'P(X>=a)' = 1 - plnorm(input$b_logn,input$logn_medie,input$logn_dev),
+           'P(a<=X<=b)' = plnorm(input$bb_logn,input$logn_medie,input$logn_dev) - plnorm(input$aa_logn,input$logn_medie,input$logn_dev)
+    )
+  })
+  output$resultPlotlogn<-renderPlot({
+    x <- seq(0,20)
+    A<-input$a_logn
+    B<-input$b_logn
+    dens<- dlnorm(x, input$logn_medie,input$logn_dev)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$problogn,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_logn & x<=input$bb_logn], input$bb_logn, input$aa_logn),
+                     c(dens[x>=input$aa_logn & x<=input$bb_logn], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  #weibull
+  output$fctmasaw <- renderPlot({
+    x <- seq(0,2*input$scale_w)
+    plot(x, dweibull(x, input$shape_w,input$scale_w), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Densitatea repartitiei Weibull")
+    abline(v=input$scale_w*gamma(1+1/input$shape_w),col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfw <- renderPlot({
+    x <- seq(0,2*input$scale_w)
+    fun <- pweibull(x, input$shape_w,input$scale_w)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultw<-renderText({
+    switch(input$probw,
+           'P(X<=a)' =pweibull(input$a_w,input$shape_w,input$scale_w),
+           'P(X>=a)' = 1 - pweibull(input$b_w,input$shape_w,input$scale_w),
+           'P(a<=X<=b)' = pweibull(input$bb_w,input$shape_w,input$scale_w) - pweibull(input$aa_w,input$shape_w,input$scale_w)
+    )
+  })
+  output$resultPlotw<-renderPlot({
+    x <- seq(0,2*input$scale_w)
+    A<-input$a_w
+    B<-input$b_w
+    dens<-  dweibull(x, input$shape_w,input$scale_w)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probw,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_w & x<=input$bb_w], input$bb_w, input$aa_w),
+                     c(dens[x>=input$aa_w & x<=input$bb_w], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  #binomiala
+  output$fctmasabin <- renderPlot({
+    x <- seq(0,input$n_bin)
+    plot(x, dbinom(x, input$n_bin,input$p_bin), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Functia de masa a repartitiei Binomiale")
+    abline(v=input$n_bin*input$p_bin,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfbin <- renderPlot({
+    x <- seq(0,input$n_bin)
+    fun <- pbinom(x, input$n_bin,input$p_bin)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultbin<-renderText({
+    switch(input$probbin,
+           'P(X<=a)' = pbinom(input$a_bin,input$n_bin,input$p_bin),
+           'P(X>=a)' = 1 - pbinom(input$b_bin,input$n_bin,input$p_bin),
+           'P(a<=X<=b)' =  pbinom(input$bb_bin,input$n_bin,input$p_bin) -  pbinom(input$aa_bin,input$n_bin,input$p_bin)
+    )
+  })
+  output$resultPlotbin<-renderPlot({
+    x <- seq(0,input$n_bin)
+    A<-input$a_bin
+    B<-input$b_bin
+    dens<- dbinom(x, input$n_bin,input$p_bin)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probbin,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_bin & x<=input$bb_bin], input$bb_bin, input$aa_bin),
+                     c(dens[x>=input$aa_bin & x<=input$bb_bin], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  #poisson
+  output$fctmasapoi <- renderPlot({
+    x <- seq(0,2*input$lambda)
+    plot(x, dpois(x, input$lambda), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Functia de masa a repartitiei Poisson")
+    abline(v=input$lambda,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfpoi <- renderPlot({
+    x <- seq(0,2*input$lambda)
+    fun <- ppois(x, input$lambda)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultpoi<-renderText({
+    switch(input$probpoi,
+           'P(X<=a)' =  ppois(input$a_poi,input$lambda),
+           'P(X>=a)' = 1 -  ppois(input$b_poi,input$lambda),
+           'P(a<=X<=b)' =   ppois(input$bb_poi,input$lambda)-ppois(input$aa_poi,input$lambda)
+    )
+  })
+  output$resultPlotpoi<-renderPlot({
+    x <- seq(0,2*input$lambda)
+    A<-input$a_poi
+    B<-input$b_poi
+    dens<- dpois(x, input$lambda)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probpoi,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_poi & x<=input$bb_poi], input$bb_poi, input$aa_poi),
+                     c(dens[x>=input$aa_poi & x<=input$bb_poi], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  #geometrica
+  output$fctmasageo <- renderPlot({
+    x <- seq(0,20)
+    plot(x, dgeom(x, input$probgeom), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Functia de masa a repartitiei Geometrice")
+    abline(v=1/input$probgeom,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfgeo <- renderPlot({
+    x <- seq(0,20)
+    fun <- pgeom(x, input$probgeom)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultgeo<-renderText({
+    switch(input$probgeo,
+           'P(X<=a)' =  pgeom(input$a_geo,input$probgeom),
+           'P(X>=a)' = 1 -  pgeom(input$b_geo,input$probgeom),
+           'P(a<=X<=b)' =   pgeom(input$bb_geo,input$probgeom)-pgeom(input$aa_geo,input$probgeom)
+    )
+  })
+  output$resultPlotgeo<-renderPlot({
+    x <- seq(0,20)
+    A<-input$a_geo
+    B<-input$b_geo
+    dens<- dgeom(x, input$probgeom)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probgeo,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_geo & x<=input$bb_geo], input$bb_geo, input$aa_geo),
+                     c(dens[x>=input$aa_geo & x<=input$bb_geo], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+}
+
+# Run the app ----
+shinyApp(ui = ui, server = server)
+```
+
+## Aplicatia Shiny
+```{r tabsets, echo=FALSE}
+library(shiny)
+# Define UI ----
+ui <- fluidPage(tabsetPanel(
+  #rep norm
+  tabPanel(
+    title = "Reparitie Normala",
+    sliderInput(inputId = "limite_norm", label = "Limite:", min = 1, max = 500, value = 100),
+    numericInput(inputId = "medie_norm", label = "Medie:", min = -100, max = 200, value = 0),
+    numericInput(inputId = "sd_norm", label = "Deviatia standard:", min = 0, max = 200, value = 1),
+    selectInput("probNorm", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probNorm == 'P(X<=a)'",
+      numericInput("a_norm", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probNorm == 'P(X>=a)'",
+      numericInput("b_norm", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probNorm == 'P(a<=X<=b)'",
+      numericInput("aa_norm", "a:", value=0),
+      numericInput("bb_norm", "b:", value=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultnorm"),
+    plotOutput("fctmasanorm"),
+    plotOutput("cdfnorm"),
+    plotOutput("resultPlotnorm")),
+  
+  
+  #rep beta
+  tabPanel(
+    title = "Repartitie Beta",
+    sliderInput(inputId = "alpha", label = "Alege Alpha: ", min = 0, max = 10, value = 1),
+    sliderInput(inputId = "beta", label = "Alege Beta: ", min = 0, max = 10, value = 1),
+    
+    selectInput("probBeta", "Alege probabilitatea:",
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probBeta == 'P(X<=a)'",
+      sliderInput("a_beta", "a:",min=0,max=1, value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probBeta == 'P(X>=a)'",
+      sliderInput("b_beta", "a:",min=0,max=1, value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probBeta == 'P(a<=X<=b)'",
+      sliderInput("aa_beta", "a:",min=0,max=1, value=0),
+      sliderInput("bb_beta", "b:",min=0,max=1, value=0)
+    )
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultbeta"),
+    plotOutput("fctmasabeta"),
+    plotOutput("cdfbeta"),
+    plotOutput("resultPlotbeta"))
+  ,
+  
+  
+  
+  
+  #chi-square
+  tabPanel(
+    title = "Reparitie Chi-Square",
+    sliderInput(inputId = "limite_chi", label = "Limite:", min = 10, max = 100, value = 30),
+    sliderInput(inputId = "df_chi", label = "Grad de libertate:", min = 0, max = 20, value = 3, step=0.1),
+    selectInput("probChi", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probChi == 'P(X<=a)'",
+      numericInput("a_chi", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probChi == 'P(X>=a)'",
+      numericInput("b_chi", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probChi == 'P(a<=X<=b)'",
+      numericInput("aa_chi", "a:", value=0),
+      numericInput("bb_chi", "b:", value=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultchi"),
+    plotOutput("fctmasachi"),
+    plotOutput("cdfchi"),
+    plotOutput("resultPlotchi")),
+  
+  
+  
+  #exponentiala
+  tabPanel(
+    title = "Repartitie Exponentiala",
+    numericInput(inputId = "nr_expexp", label = "Nr exp:", min = 1, max = 100, value = 1),
+    sliderInput(inputId = "rata", label = "Rata", min = 0, max = 1, value = 1),
+    selectInput("probExp", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probExp == 'P(X<=a)'",
+      numericInput("a_exp", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probExp == 'P(X>=a)'",
+      numericInput("b_exp", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probExp == 'P(a<=X<=b)'",
+      numericInput("aa_exp", "a:", value=0,min=0),
+      numericInput("bb_exp", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultexp"),
+    plotOutput("fctmasaexp"),
+    plotOutput("cdfexp"),
+    plotOutput("resultPlotexp")),
+  
+  
+  #fisher  
+  tabPanel(
+    title = "Repartitie Fisher",
+    sliderInput(inputId ="df1_fish", label = "Alege gradul de libertate 1", min = 0, max = 50, value = 1),
+    sliderInput(inputId ="df2_fish", label = "Alege gradul de libertate 2", min = 0, max = 50, value = 1),
+    selectInput("probFish", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probFish == 'P(X<=a)'",
+      numericInput("a_fish", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probFish == 'P(X>=a)'",
+      numericInput("b_fish", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probFish == 'P(a<=X<=b)'",
+      numericInput("aa_fish", "a:", value=0,min=0),
+      numericInput("bb_fish", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultfish"),
+    plotOutput("fctmasafish"),
+    plotOutput("cdffish"),
+    plotOutput("resultPlotfish")
+  ),
+  
+  #cauchy
+  tabPanel(
+    title = "Repartitie Cauchy",
+    sliderInput(inputId = "nr_cauchy", label = "Nr exp:",min = 20, max = 100, value = 20),
+    sliderInput(inputId ="loc_cauchy", label = "Punctul de varf:", min = -10, max = 10, value = 0),
+    sliderInput(inputId ="scale_cauchy", label = "Scala:", min = 0, max = 10, value =   5),
+    selectInput("probCauchy", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probCauchy == 'P(X<=a)'",
+      numericInput("a_Cauchy", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probCauchy == 'P(X>=a)'",
+      numericInput("b_Cauchy", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probCauchy == 'P(a<=X<=b)'",
+      numericInput("aa_Cauchy", "a:", value=0,min=0),
+      numericInput("bb_Cauchy", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultCauchy"),
+    plotOutput("fctmasaCauchy"),
+    plotOutput("cdfCauchy"),
+    plotOutput("resultPlotCauchy")
+  ),
+  
+  #student  
+  tabPanel(
+    title = "Reparitie Student",
+    sliderInput(inputId = "limite_stud", label = "Limite:", min = 10, max = 50, value = 20),
+    sliderInput(inputId = "stud_df", label = "Grad de libertate:", min = 0, max = 10, value = 3, step=0.1),
+    selectInput("probStud", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probStud == 'P(X<=a)'",
+      numericInput("a_Stud", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probStud == 'P(X>=a)'",
+      numericInput("b_Stud", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probStud == 'P(a<=X<=b)'",
+      numericInput("aa_Stud", "a:", value=0,min=0),
+      numericInput("bb_Stud", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultStud"),
+    plotOutput("fctmasaStud"),
+    plotOutput("cdfStud"),
+    plotOutput("resultPlotStud")
+  ),
+  
+  #logistic
+  tabPanel(
+    title = "Reparitie Logistic",
+    numericInput("log","Loc: ", value = 1),
+    numericInput("scale_log","Scale: ", value = 1),
+    selectInput("probLog", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probLog == 'P(X<=a)'",
+      numericInput("a_Log", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probLog == 'P(X>=a)'",
+      numericInput("b_Log", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probLog == 'P(a<=X<=b)'",
+      numericInput("aa_Log", "a:", value=0,min=0),
+      numericInput("bb_Log", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultLog"),
+    plotOutput("fctmasaLog"),
+    plotOutput("cdfLog"),
+    plotOutput("resultPlotLog")
+  ),
+  
+  #unif
+  tabPanel(
+    title = "Reparitie Uniforma Continua",
+    sliderInput(inputId ="min_unif", label = "Alege min:", min = 0, max = 20, value = 5),
+    sliderInput(inputId ="max_unif", label = "Alege max:", min = 0, max = 20, value = 15),
+    selectInput("probUnif", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probUnif == 'P(X<=a)'",
+      numericInput("a_Unif", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probUnif == 'P(X>=a)'",
+      numericInput("b_Unif", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probUnif == 'P(a<=X<=b)'",
+      numericInput("aa_Unif", "a:", value=0,min=0),
+      numericInput("bb_Unif", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultUnif"),
+    plotOutput("fctmasaUnif"),
+    plotOutput("cdfUnif"),
+    plotOutput("resultPlotUnif")
+    
+  ),
+  
+  #gamma  
+  tabPanel(
+    title = "Repartitie Gamma",
+    numericInput(inputId = "shape_gamma", label = "Shape : ", min = 0, value = 1),
+    numericInput(inputId = "rata_gamma", label = "Rata: ", min = 1, value = 1),
+    selectInput("probGamma", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probGamma == 'P(X<=a)'",
+      numericInput("a_Gamma", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probGamma == 'P(X>=a)'",
+      numericInput("b_Gamma", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probGamma == 'P(a<=X<=b)'",
+      numericInput("aa_Gamma", "a:", value=0,min=0),
+      numericInput("bb_Gamma", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultGamma"),
+    plotOutput("fctmasaGamma"),
+    plotOutput("cdfGamma"),
+    plotOutput("resultPlotGamma")
+  ),
+  
+  
+  #log-normala
+  tabPanel(
+    title = "Reparitie Log Normala",
+    sliderInput(inputId = "logn_medie", label = "Medie:", min = 0, max = 200, value = 50),
+    sliderInput(inputId = "logn_dev", label = "Abaterea standard:", min = 1, max = 25, value = 10, step=0.25),
+    selectInput("problogn", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.problogn == 'P(X<=a)'",
+      numericInput("a_logn", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.problogn == 'P(X>=a)'",
+      numericInput("b_logn", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.problogn == 'P(a<=X<=b)'",
+      numericInput("aa_logn", "a:", value=0,min=0),
+      numericInput("bb_logn", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultlogn"),
+    plotOutput("fctmasalogn"),
+    plotOutput("cdflogn"),
+    plotOutput("resultPlotlogn")
+  ),
+  
+  #weibull 
+  tabPanel(
+    title = "Repartitie Weibull",
+    sliderInput(inputId ="shape_w", label = "Alege forma:", min = 0.1, max = 10, value = 1),
+    sliderInput(inputId ="scale_w", label = "Alege scala:", min = 0.1, max = 10, value = 1),
+    selectInput("probw", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probw == 'P(X<=a)'",
+      numericInput("a_w", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probw == 'P(X>=a)'",
+      numericInput("b_w", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probw == 'P(a<=X<=b)'",
+      numericInput("aa_w", "a:", value=0,min=0),
+      numericInput("bb_w", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultw"),
+    plotOutput("fctmasaw"),
+    plotOutput("cdfw"),
+    plotOutput("resultPlotw")
+  ),
+  
+  
+  #binomiala
+  tabPanel(
+    title = "Repartitie Binomiala",
+    sliderInput(inputId = "n_bin", label = "Nr exp:", min = 1, max = 1000, value = 100),
+    sliderInput(inputId = "p_bin", label = "Alege probabilitatea", min = 0, max = 1, value = 0.5),
+    selectInput("probbin", "Alege probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probbin == 'P(X<=a)'",
+      numericInput("a_bin", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probbin == 'P(X>=a)'",
+      numericInput("b_bin", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probbin == 'P(a<=X<=b)'",
+      numericInput("aa_bin", "a:", value=0,min=0),
+      numericInput("bb_bin", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultbin"),
+    plotOutput("fctmasabin"),
+    plotOutput("cdfbin"),
+    plotOutput("resultPlotbin")
+  ),
+  
+  #poisson
+  tabPanel(
+    title = "Repartitie Poisson",
+    sliderInput(inputId = "lambda", label = "Rata aparitiei: ", min = 1, max = 50, value = 10),
+    selectInput("probpoi", "Probabilitatea:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probpoi == 'P(X<=a)'",
+      numericInput("a_poi", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probpoi == 'P(X>=a)'",
+      numericInput("b_poi", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probpoi == 'P(a<=X<=b)'",
+      numericInput("aa_poi", "a:", value=0,min=0),
+      numericInput("bb_poi", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultpoi"),
+    plotOutput("fctmasapoi"),
+    plotOutput("cdfpoi"),
+    plotOutput("resultPlotpoi")
+  ),
+  
+  
+  #geometrica
+  tabPanel(
+    title = "Repartitie Geometrica",
+    sliderInput(inputId = "probgeom", label = "Alege probabilitatea: ", min = 0, max = 1, value = 0.5),
+    selectInput("probgeo", "Alege tipul probabilitatii:", 
+                choices = list("P(X<=a)", "P(X>=a)", "P(a<=X<=b)")),
+    conditionalPanel(
+      condition = "input.probgeo == 'P(X<=a)'",
+      numericInput("a_geo", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probgeo == 'P(X>=a)'",
+      numericInput("b_geo", "a:", value=0)
+    ),
+    conditionalPanel(
+      condition = "input.probgeo == 'P(a<=X<=b)'",
+      numericInput("aa_geo", "a:", value=0,min=0),
+      numericInput("bb_geo", "b:", value=1,min=0)
+    ) 
+    
+    ,
+    h5("Rezultat probabilitate:"),
+    textOutput( "resultgeo"),
+    plotOutput("fctmasageo"),
+    plotOutput("cdfgeo"),
+    plotOutput("resultPlotgeo")
+  )
+  
+  
+)
+)
+
+# Define server logic ----
+
+
+server <- function(input, output, session) {
+  #normala
+  output$fctmasanorm <- renderPlot({
+    x <- seq(-input$limite_norm, input$limite_norm)
+    plot(x, dnorm(x, mean = input$medie_norm, sd = input$sd_norm), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Densitatea repartitiei normale")
+    abline(v=input$medie_norm,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfnorm <- renderPlot({
+    x <- seq(-input$limite_norm, input$limite_norm)
+    fun <- pnorm(x, mean = input$medie_norm, sd = input$sd_norm)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultnorm<-renderText({
+    switch(input$probNorm,
+           'P(X<=a)' = pnorm(input$a_norm,mean=input$medie_norm,sd=input$sd_norm),
+           'P(X>=a)' = 1 -  pnorm(input$b_norm,mean=input$medie_norm,sd=input$sd_norm),
+           'P(a<=X<=b)' =  pnorm(input$bb_norm,mean=input$medie_norm,sd=input$sd_norm) -  pnorm(input$aa_norm,mean=input$medie_norm,sd=input$sd_norm)
+    )
+  })
+  output$resultPlotnorm<-renderPlot({
+    x <- seq(-input$limite_norm, input$limite_norm)
+    A<-input$a_norm
+    B<-input$b_norm
+    AA<-input$aa_norm
+    BB<-input$bb_norm
+    dens<-dnorm(x,mean=input$medie_norm,sd= input$sd_norm)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probNorm,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_norm & x<=input$bb_norm], input$bb_norm, input$aa_norm),
+                     c(dens[x>=input$aa_norm & x<=input$bb_norm], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  
+  
+  #beta
+  
+  output$fctmasabeta<-renderPlot({
+    x<-seq(0,1,by=0.01)
+    plot(x,dbeta(x,input$alpha,input$beta),type="l",col="cyan3",lwd=2.5,
+         xlab="X",ylab="Fct de masa",main="Functia de masa a repartitiei beta ")
+    abline(v=input$alpha/(input$alpha+input$beta),col="cyan2",lwd=2,lty=2)
+    
+  })
+  output$cdfbeta<-renderPlot({
+    x<-seq(0,1,by=0.01)
+    plot(x,pbeta(x,input$alpha,input$beta),type="l",col="cyan3", lwd=2.5, xlab="x",ylab="CDF",
+         main="Functia de repartitie")
+  })
+  output$resultbeta<-renderText({
+    switch(input$probBeta,
+           'P(X<=a)' = pbeta(input$a_beta,input$alpha,input$beta),
+           'P(X>=a)' = 1 -  pbeta(input$b_beta,input$alpha,input$beta),
+           'P(a<=X<=b)' =  pbeta(input$bb_beta,input$alpha,input$beta) -  pbeta(input$aa_beta,input$alpha,input$beta)
+    )
+  })
+  output$resultPlotbeta<-renderPlot({
+    x<-seq(0,1,by=0.01)
+    A<-input$a_beta
+    B<-input$b_beta
+    dens<-dbeta(x,input$alpha,input$beta)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probBeta,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_beta & x<=input$bb_beta], input$bb_beta, input$aa_beta),
+                     c(dens[x>=input$aa_beta & x<=input$bb_beta], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  
+  #chi-square
+  output$fctmasachi <- renderPlot({
+    x <- seq(0, input$limite_chi, by=0.01)
+    plot(x, dchisq(x, df=input$df_chi), type="l",col="cyan3", xlab = "Valori", ylab = "Fct de masa", main = "Densitatea repartitiei Chi square")
+    abline(v=input$df_chi,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfchi <- renderPlot({
+    x <- seq(0, input$limite_chi, by=0.01)
+    plot(x, pchisq(x, df=input$df_chi), 
+         type="l",col="cyan3", xlab = "Valori", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultchi<-renderText({
+    switch(input$probChi,
+           'P(X<=a)' = pchisq(input$a_chi,input$df_chi),
+           'P(X>=a)' = 1 -  pchisq(input$a_chi,input$df_chi),
+           'P(a<=X<=b)' =  pchisq(input$bb_chi,input$df_chi) -  pchisq(input$aa_chi,input$df_chi)
+    )
+  })
+  output$resultPlotchi<-renderPlot({
+    x <- seq(0, input$limite_chi, by=0.01)
+    A<-input$a_chi
+    B<-input$b_chi
+    dens<-dchisq(x,input$df_chi)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probChi,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_chi & x<=input$bb_chi], input$bb_chi, input$aa_chi),
+                     c(dens[x>=input$aa_chi & x<=input$bb_chi], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  #exponentiala
+  output$fctmasaexp <- renderPlot({
+    x <- seq(0, input$nr_expexp,length.out=1000)
+    plot(x,dexp(x, rate=input$rata), type="l",col="cyan3", xlab = "Valori", ylab = "Fct de masa", main = "Densitatea repartitiei Exponentiala")
+    abline(v=1/input$rata,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfexp <- renderPlot({
+    x <- seq(0, input$nr_expexp)
+    plot(x, pexp(x, rate=input$rata),type="l",col="cyan3", lwd=2.5, xlab="x",ylab="CDF",
+         main="Functia de repartitie")
+  })
+  output$resultexp<-renderText({
+    switch(input$probExp,
+           'P(X<=a)' = pexp(input$a_exp,input$rata),
+           'P(X>=a)' = 1 -  pexp(input$a_exp,input$rata),
+           'P(a<=X<=b)' =  pexp(input$bb_exp,input$rata) -  pchisq(input$aa_exp,input$rata)
+    )
+  })
+  output$resultPlotexp<-renderPlot({
+    x <- seq(0, input$nr_expexp)
+    A<-input$a_exp
+    B<-input$b_exp
+    dens<-dexp(x,input$rata)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probExp,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_exp & x<=input$bb_exp], input$bb_exp, input$aa_exp),
+                     c(dens[x>=input$aa_exp & x<=input$bb_exp], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  #fisher
+  output$fctmasafish <- renderPlot({
+    x <- seq(-1*(input$df1_fish + input$df2_fish),input$df1_fish + input$df2_fish, by = 0.1)
+    plot(x, df(x, input$df1_fish, input$df2_fish), type = "l",col="cyan3", xlab ="x", ylab = "Fct masa", main = "Densitatea repartitiei Fisher")
+    abline(v=input$df2_fish/(input$df2_fish-2),col="cyan2",lwd=2,lty=2)
+  })
+  output$cdffish <- renderPlot({
+    x <- seq(-1*(input$df1_fish + input$df2_fish), input$df1_fish + input$df2_fish, by = 0.1)
+    plot(x, pf(x, input$df1_fish, input$df2_fish), type = "l",col="cyan3", xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+  })
+  output$resultfish<-renderText({
+    switch(input$probFish,
+           'P(X<=a)' = pf(input$a_fish,input$df1_fish, input$df2_fish),
+           'P(X>=a)' = 1 -  pf(input$a_fish,input$df1_fish, input$df2_fish),
+           'P(a<=X<=b)'=pf(input$bb_fish,input$df1_fish, input$df2_fish)-pf(input$aa_fish,input$df1_fish, input$df2_fish)
+    )
+  })
+  output$resultPlotfish<-renderPlot({
+    x <- seq(-1*(input$df1_fish + input$df2_fish), input$df1_fish + input$df2_fish, by = 0.1)
+    A<-input$a_fish
+    B<-input$b_fish
+    dens<-df(x,input$df1_fish,input$df2_fish)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probFish,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_fish & x<=input$bb_fish], input$bb_fish, input$aa_fish),
+                     c(dens[x>=input$aa_fish & x<=input$bb_fish], dens[x==min(x)],dens[x==min(x)]),
+                     
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  
+  #cauchy
+  
+  output$fctmasaCauchy <- renderPlot({
+    x <- seq(-1*input$nr_cauchy,input$nr_cauchy, by = 0.1)
+    plot(x, dcauchy(x,input$loc_cauchy, input$scale_cauchy), type = "l", col="cyan3",
+         xlab = "x", ylab = "Fct de masa", main = "Densitatea repartitiei Cauchy")
+  })
+  output$cdfCauchy <- renderPlot({
+    x <- seq(-1*input$nr_cauchy,input$nr_cauchy, by = 0.1)
+    fun <- pcauchy(x, input$loc_cauchy, input$scale_cauchy)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultCauchy<-renderText({
+    switch(input$probCauchy,
+           'P(X<=a)' = pnorm(input$a_Cauchy,mean=input$medie_norm,sd=input$sd_norm),
+           'P(X>=a)' = 1 -  pnorm(input$b_Cauchy,mean=input$medie_norm,sd=input$sd_norm),
+           'P(a<=X<=b)' =  pnorm(input$bb_Cauchy,mean=input$medie_norm,sd=input$sd_norm) -  pnorm(input$aa_Cauchy,mean=input$medie_norm,sd=input$sd_norm)
+    )
+  })
+  output$resultPlotCauchy<-renderPlot({
+    x <-  seq(-1*input$nr_cauchy,input$nr_cauchy, by = 0.1)
+    A<-input$a_Cauchy
+    B<-input$b_Cauchy
+    dens<-dcauchy(x,input$loc_cauchy, input$scale_cauchy)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probCauchy,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_Cauchy & x<=input$bb_Cauchy], input$bb_Cauchy, input$aa_Cauchy),
+                     c(dens[x>=input$aa_Cauchy & x<=input$bb_Cauchy], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  
+  #student
+  output$fctmasaStud <- renderPlot({
+    x <- seq(-input$limite_stud, input$limite_stud)
+    plot(x, dt(x, input$stud_df), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Densitatea repartitiei Student(de tip T)")
+    abline(v=0,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfStud <- renderPlot({
+    x <- seq(-input$limite_stud, input$limite_stud)
+    fun <- pt(x, input$stud_df)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultStud<-renderText({
+    switch(input$probStud,
+           'P(X<=a)' = pt(input$a_Stud,input$stud_df),
+           'P(X>=a)' = 1 -  pt(input$b_Stud,input$stud_df),
+           'P(a<=X<=b)' =  pt(input$bb_Stud,input$stud_df) - pt(input$aa_Stud,input$stud_df)
+    )
+  })
+  output$resultPlotStud<-renderPlot({
+    x <- seq(-input$limite_stud, input$limite_stud)
+    A<-input$a_Stud
+    B<-input$b_Stud
+    AA<-input$aa_Stud
+    BB<-input$bb_Stud
+    dens<-dt(x,input$stud_df)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probStud,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_Stud & x<=input$bb_Stud], input$bb_Stud, input$aa_Stud),
+                     c(dens[x>=input$aa_Stud & x<=input$bb_Stud], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  
+  #logistic
+  output$fctmasaLog <- renderPlot({
+    x <- seq(-2*input$log, 10*input$log)
+    plot(x, dlogis(x, input$log,input$scale_log),type="l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Densitatea repartitiei Logistic")
+    abline(v=input$log,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfLog <- renderPlot({
+    x <- seq(-2*input$log, 10*input$log)
+    fun <- plogis(x, input$log,input$scale_log)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultLog<-renderText({
+    switch(input$probLog,
+           'P(X<=a)' = plogis(input$a_Log,input$log,input$scale_log),
+           'P(X>=a)' = 1 -  plogis(input$b_Log,input$log,input$scale_log),
+           'P(a<=X<=b)' =  plogis(input$bb_Log,input$log,input$scale_log) - plogis(input$aa_Log,input$log,input$scale_log)
+    )
+  })
+  output$resultPlotLog<-renderPlot({
+    x <- seq(-2*input$log, 10*input$log)
+    A<-input$a_Log
+    B<-input$b_Log
+    dens<-dlogis(x, input$log,input$scale_log)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probLog,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_Log & x<=input$bb_Log], input$bb_Log, input$aa_Log),
+                     c(dens[x>=input$aa_Log & x<=input$bb_Log], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  #uniforma
+  output$fctmasaUnif <- renderPlot({
+    x <- seq(-5*input$min_unif,5*input$max_unif)
+    plot(x, dunif(x, input$min_unif,input$max_unif), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Densitatea repartitiei Uniforme")
+    abline(v=(input$min_unif+input$max_unif)/2,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfUnif <- renderPlot({
+    x <- seq(-5*input$min_unif,5*input$max_unif)
+    fun <- punif(x, input$min_unif,input$max_unif)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultUnif<-renderText({
+    switch(input$probUnif,
+           'P(X<=a)' = punif(input$a_Unif,input$min_unif,input$max_unif),
+           'P(X>=a)' = 1 -  punif(input$b_Unif,input$min_unif,input$max_unif),
+           'P(a<=X<=b)' =  punif(input$bb_Unif,input$min_unif,input$max_unif) - punif(input$aa_Unif,input$max_unif)
+    )
+  })
+  output$resultPlotUnif<-renderPlot({
+    x <- seq(-5*input$min_unif,5*input$max_unif)
+    A<-input$a_Unif
+    B<-input$b_Unif
+    dens<-dunif(x, input$min_unif,input$max_unif)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probUnif,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_Unif & x<=input$bb_Unif], input$bb_Unif, input$aa_Unif),
+                     c(dens[x>=input$aa_Unif & x<=input$bb_Unif], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  #gamma
+  output$fctmasaGamma <- renderPlot({
+    x <- seq(0,2*input$shape_gamma)
+    plot(x, dgamma(x, input$shape_gamma,input$rata_gamma), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Densitatea repartitiei Gamma")
+    abline(v=((input$shape_gamma)/(input$rate_gamma)),col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfGamma <- renderPlot({
+    x <- seq(0,2*input$shape_gamma)
+    fun <- pgamma(x, input$shape_gamma,input$rata_gamma)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultGamma<-renderText({
+    switch(input$probGamma,
+           'P(X<=a)' = pgamma(input$a_Gamma,input$shape_gamma,input$rata_gamma),
+           'P(X>=a)' = 1 -  pgamma(input$b_Gamma,input$shape_gamma,input$rata_gamma),
+           'P(a<=X<=b)' =  pgamma(input$bb_Gamma,input$shape_gamma,input$rata_gamma) - pgamma(input$aa_Unif,input$shape_gamma,input$rata_gamma)
+    )
+  })
+  output$resultPlotGamma<-renderPlot({
+    x <- seq(0,2*input$shape_gamma)
+    A<-input$a_Gamma
+    B<-input$b_Gamma
+    dens<-dgamma(x, input$shape_gamma,input$rata_gamma)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probGamma,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_Gamma & x<=input$bb_Gamma], input$bb_Gamma, input$aa_Gamma),
+                     c(dens[x>=input$aa_Gamma & x<=input$bb_Gamma], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  #log normala
+  output$fctmasalogn <- renderPlot({
+    x <- seq(0,20)
+    plot(x, dlnorm(x, input$logn_medie,input$logn_dev), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Densitatea repartitiei Log Normala")
+    abline(v=exp(input$logn_medie+1/2*input$logn_dev^2),col="cyan2",lwd=2,lty=2)
+  })
+  output$cdflogn <- renderPlot({
+    x <- seq(0,20)
+    fun <- plnorm(x, input$logn_medie,input$logn_dev)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultlogn<-renderText({
+    switch(input$problogn,
+           'P(X<=a)' =plnorm(input$a_logn,input$logn_medie,input$logn_dev),
+           'P(X>=a)' = 1 - plnorm(input$b_logn,input$logn_medie,input$logn_dev),
+           'P(a<=X<=b)' = plnorm(input$bb_logn,input$logn_medie,input$logn_dev) - plnorm(input$aa_logn,input$logn_medie,input$logn_dev)
+    )
+  })
+  output$resultPlotlogn<-renderPlot({
+    x <- seq(0,20)
+    A<-input$a_logn
+    B<-input$b_logn
+    dens<- dlnorm(x, input$logn_medie,input$logn_dev)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$problogn,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_logn & x<=input$bb_logn], input$bb_logn, input$aa_logn),
+                     c(dens[x>=input$aa_logn & x<=input$bb_logn], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  #weibull
+  output$fctmasaw <- renderPlot({
+    x <- seq(0,2*input$scale_w)
+    plot(x, dweibull(x, input$shape_w,input$scale_w), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Densitatea repartitiei Weibull")
+    abline(v=input$scale_w*gamma(1+1/input$shape_w),col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfw <- renderPlot({
+    x <- seq(0,2*input$scale_w)
+    fun <- pweibull(x, input$shape_w,input$scale_w)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultw<-renderText({
+    switch(input$probw,
+           'P(X<=a)' =pweibull(input$a_w,input$shape_w,input$scale_w),
+           'P(X>=a)' = 1 - pweibull(input$b_w,input$shape_w,input$scale_w),
+           'P(a<=X<=b)' = pweibull(input$bb_w,input$shape_w,input$scale_w) - pweibull(input$aa_w,input$shape_w,input$scale_w)
+    )
+  })
+  output$resultPlotw<-renderPlot({
+    x <- seq(0,2*input$scale_w)
+    A<-input$a_w
+    B<-input$b_w
+    dens<-  dweibull(x, input$shape_w,input$scale_w)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probw,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_w & x<=input$bb_w], input$bb_w, input$aa_w),
+                     c(dens[x>=input$aa_w & x<=input$bb_w], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  #binomiala
+  output$fctmasabin <- renderPlot({
+    x <- seq(0,input$n_bin)
+    plot(x, dbinom(x, input$n_bin,input$p_bin), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Functia de masa a repartitiei Binomiale")
+    abline(v=input$n_bin*input$p_bin,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfbin <- renderPlot({
+    x <- seq(0,input$n_bin)
+    fun <- pbinom(x, input$n_bin,input$p_bin)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultbin<-renderText({
+    switch(input$probbin,
+           'P(X<=a)' = pbinom(input$a_bin,input$n_bin,input$p_bin),
+           'P(X>=a)' = 1 - pbinom(input$b_bin,input$n_bin,input$p_bin),
+           'P(a<=X<=b)' =  pbinom(input$bb_bin,input$n_bin,input$p_bin) -  pbinom(input$aa_bin,input$n_bin,input$p_bin)
+    )
+  })
+  output$resultPlotbin<-renderPlot({
+    x <- seq(0,input$n_bin)
+    A<-input$a_bin
+    B<-input$b_bin
+    dens<- dbinom(x, input$n_bin,input$p_bin)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probbin,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_bin & x<=input$bb_bin], input$bb_bin, input$aa_bin),
+                     c(dens[x>=input$aa_bin & x<=input$bb_bin], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  #poisson
+  output$fctmasapoi <- renderPlot({
+    x <- seq(0,2*input$lambda)
+    plot(x, dpois(x, input$lambda), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Functia de masa a repartitiei Poisson")
+    abline(v=input$lambda,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfpoi <- renderPlot({
+    x <- seq(0,2*input$lambda)
+    fun <- ppois(x, input$lambda)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultpoi<-renderText({
+    switch(input$probpoi,
+           'P(X<=a)' =  ppois(input$a_poi,input$lambda),
+           'P(X>=a)' = 1 -  ppois(input$b_poi,input$lambda),
+           'P(a<=X<=b)' =   ppois(input$bb_poi,input$lambda)-ppois(input$aa_poi,input$lambda)
+    )
+  })
+  output$resultPlotpoi<-renderPlot({
+    x <- seq(0,2*input$lambda)
+    A<-input$a_poi
+    B<-input$b_poi
+    dens<- dpois(x, input$lambda)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probpoi,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_poi & x<=input$bb_poi], input$bb_poi, input$aa_poi),
+                     c(dens[x>=input$aa_poi & x<=input$bb_poi], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+  #geometrica
+  output$fctmasageo <- renderPlot({
+    x <- seq(0,20)
+    plot(x, dgeom(x, input$probgeom), type = "l", col="cyan3", lwd=2.5,
+         xlab = "x", ylab = "Fct de masa", main = "Functia de masa a repartitiei Geometrice")
+    abline(v=1/input$probgeom,col="cyan2",lwd=2,lty=2)
+  })
+  output$cdfgeo <- renderPlot({
+    x <- seq(0,20)
+    fun <- pgeom(x, input$probgeom)
+    plot(x, fun, type = "l",col="cyan3",lwd=2.5, xlab = "x", ylab = "CDF", main = "Functia de repartitie")
+    
+  })
+  output$resultgeo<-renderText({
+    switch(input$probgeo,
+           'P(X<=a)' =  pgeom(input$a_geo,input$probgeom),
+           'P(X>=a)' = 1 -  pgeom(input$b_geo,input$probgeom),
+           'P(a<=X<=b)' =   pgeom(input$bb_geo,input$probgeom)-pgeom(input$aa_geo,input$probgeom)
+    )
+  })
+  output$resultPlotgeo<-renderPlot({
+    x <- seq(0,20)
+    A<-input$a_geo
+    B<-input$b_geo
+    dens<- dgeom(x, input$probgeom)
+    plot(x,dens,
+         type="l",
+         col = "cyan3",
+         lwd=2.5,
+         xlab="Valori",
+         ylab="PDF",
+         main="Functia densitate de probabilitate")
+    switch(input$probgeo,
+           'P(X<=a)' = {
+             polygon(c(x[x<=A], A),
+                     c(dens[x<=A], dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(X>=a)' = {
+             polygon(c(x[x>=B], max(x), B),
+                     c(dens[x>=B], 0, 0),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           },
+           'P(a<=X<=b)' = {
+             polygon(c(x[x>=input$aa_geo & x<=input$bb_geo], input$bb_geo, input$aa_geo),
+                     c(dens[x>=input$aa_geo & x<=input$bb_geo], dens[x==min(x)],dens[x==min(x)]),
+                     col="pink",
+                     density=10,
+                     angle=90)
+           }
+    )
+  })
+  
+}
+
+# Run the app ----
+shinyApp(ui = ui, server = server)
+```
+ 
