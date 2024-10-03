@@ -1,8 +1,0 @@
-{
-"SpaProxyServer": {
-"ServerUrl": "https://localhost:44410",
-"LaunchCommand": "npm start",
-"WorkingDirectory": "C:\\Users\\mihae\\Desktop\\Labs fmi\\Lab 2022\\lab 10 demo sg 11\\Demo\\Demo\\ClientApp\\",
-"MaxTimeoutInSeconds": "120"
-}
-}
