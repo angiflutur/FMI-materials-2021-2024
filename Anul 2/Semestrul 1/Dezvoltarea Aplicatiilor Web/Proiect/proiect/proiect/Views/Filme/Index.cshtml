@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Film>
+
+@{
+    ViewData["Title"] = "Lista de filme";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1>@ViewData["Title"]</h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Imagine</th>
+                    <th>Titlu</th>
+                    <th>Pret</th>
+                    <th>Descriere</th>
+                    <th>CategorieFilm</th>
+                    <th>Acțiuni</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var film in Model)
+                {
+                    <tr>
+                        <td class="align-middle">
+                            <img src="@film.Imagine" alt="@film.Titlu" style="max-width: 150px" />
+                        </td>
+
+                        <td class="align-middle">
+                            @Html.DisplayFor(modelItem => film.Titlu)
+                        </td>
+                        <td class="align-middle">
+                            @film.Pret
+                        </td>
+                        <td class="align-middle">
+                            @film.Descriere
+                        </td>
+                        <td class="align-middle">
+                            @film.CategorieFilm
+                        </td>
+                        <td class="align-middle">
+                            <a class="btn btn-outline-primary" href="@Url.Action("Edit", new { id = film.IdFilm })"><i class="bi bi-pencil-square"></i> Edit</a>
+                            <a class="btn btn-outline-info" href="@Url.Action("Details", new { id = film.IdFilm })"><i class="bi bi-eye"></i> Detalii</a>
+                            <a class="btn btn-danger text-white" href="@Url.Action("Delete", new { id = film.IdFilm })"><i class="bi bi-trash"></i> Sterge</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

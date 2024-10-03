@@ -1,0 +1,28 @@
+﻿@model proiect.Models.Cinema
+
+<h2>Details</h2>
+
+<div>
+    <h4>Cinema</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Nume Cinema:
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NumeCinema)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Descriere:
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Descriere)
+        </dd>
+    </dl>
+</div>
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.IdCinema">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</p>

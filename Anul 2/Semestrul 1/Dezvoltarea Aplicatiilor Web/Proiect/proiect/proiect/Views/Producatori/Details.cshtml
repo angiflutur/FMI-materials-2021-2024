@@ -1,0 +1,37 @@
+﻿@model proiect.Models.Producator
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Nume Producator:
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NumeProducator)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Imagine:
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Imagine)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Bio:
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Bio)
+        </dd>
+    </dl>
+</div>
+<p>
+    <a asp-action="Index">Back to List</a>
+</p>

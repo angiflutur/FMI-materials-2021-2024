@@ -1,0 +1,36 @@
+﻿@model proiect.Models.Actor // Asigurați-vă că utilizați corect modelul Actor
+
+@{
+    ViewData["Title"] = "Detalii Actor";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Nume Actor:
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NumeActor)
+        </dd>
+
+        <dt class="col-sm-2">
+            Poza de Profil:
+        </dt>
+        <dd class="col-sm-10">
+            <img src="@Model.Imagine" alt="Poza de Profil" style="max-width: 150px" />
+        </dd>
+
+        <dt class="col-sm-2">
+            Biografie:
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Bio)
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Index">Înapoi la Listă</a>
+</div>

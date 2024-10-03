@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Actor>
+
+@{
+    ViewData["Title"] = "Lista de actori";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1>@ViewData["Title"]</h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Imagine</th>
+                    <th>Nume Actor</th>
+                    <th>Bio</th>
+                    <th>Acțiuni</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var actor in Model)
+                {
+                    <tr>
+                        <td class="align-middle">
+                            <img class="circle" src="@actor.Imagine" alt="@actor.NumeActor" style="max-width: 150px" />
+                        </td>
+
+                        <td class="align-middle">
+                            @Html.DisplayFor(modelItem => actor.NumeActor)
+                        </td>
+                        <td class="align-middle">
+                            @Html.DisplayFor(modelItem => actor.Bio)
+                        </td>
+                        <td class="align-middle">
+                            <a class="btn btn-outline-primary" href="@Url.Action("Edit", new { id = actor.IdActor })"><i class="bi bi-pencil-square"></i> Edit</a>
+                            <a class="btn btn-outline-info" href="@Url.Action("Details", new { id = actor.IdActor })"><i class="bi bi-eye"></i> Detalii</a>
+                            <a class="btn btn-danger text-white" href="@Url.Action("DeleteConfirmed", new { id = actor.IdActor })"><i class="bi bi-trash"></i> Sterge</a>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

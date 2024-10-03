@@ -1,0 +1,22 @@
+﻿@model proiect.Models.Cinema
+
+<h2>Create Cinema</h2>
+
+<form asp-action="Create">
+    <div class="form-group">
+        <label asp-for="NumeCinema" class="control-label"></label>
+        <input asp-for="NumeCinema" class="form-control" />
+        <span asp-validation-for="NumeCinema" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Descriere" class="control-label"></label>
+        <textarea asp-for="Descriere" class="form-control"></textarea>
+        <span asp-validation-for="Descriere" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</form>

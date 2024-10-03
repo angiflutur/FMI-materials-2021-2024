@@ -1,0 +1,13 @@
+﻿@model proiect.Models.Film
+
+<h1>Ștergere Film</h1>
+
+<div>
+    <h4>Sunteți sigur că doriți să ștergeți filmul cu ID: @Model.IdFilm și titlu: @Model.Titlu?</h4>
+    <form asp-action="DeleteConfirmed" method="post">
+        <input type="hidden" asp-for="IdFilm" />
+        <button type="submit" class="btn btn-danger">Da, șterge</button>
+    </form>
+</div>
+
+<a asp-action="Index">Înapoi la Listă</a>

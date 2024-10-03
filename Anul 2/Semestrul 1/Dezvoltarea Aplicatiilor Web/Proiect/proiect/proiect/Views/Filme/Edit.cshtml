@@ -1,0 +1,13 @@
+﻿@model proiect.Models.Film
+
+<h1>Editare Film</h1>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="IdFilm" />
+
+    <!-- Afișează aici câmpurile pentru editarea filmului, folosind Tag Helpers -->
+
+    <button type="submit" class="btn btn-primary">Salvare</button>
+</form>
+
+<a asp-action="Index">Înapoi la Listă</a>

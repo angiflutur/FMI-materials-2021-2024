@@ -1,0 +1,23 @@
+﻿@model proiect.Models.Actor
+
+@{
+    ViewData["Title"] = "Editare Actor";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<a asp-controller="Actori" asp-action="Edit" asp-route-id="@Model.IdActor">Editare</a>
+
+<form asp-action="Edit" method="post">
+    <div class="form-group">
+        <label asp-for="NumeActor" class="control-label"></label>
+        <input asp-for="NumeActor" class="form-control" />
+        <span asp-validation-for="NumeActor" class="text-danger"></span>
+    </div>
+    <!-- Alte câmpuri pot fi adăugate aici pentru editare -->
+
+    <div class="form-group">
+        <input type="submit" value="Salvează modificările" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Anulează</a>
+    </div>
+</form>

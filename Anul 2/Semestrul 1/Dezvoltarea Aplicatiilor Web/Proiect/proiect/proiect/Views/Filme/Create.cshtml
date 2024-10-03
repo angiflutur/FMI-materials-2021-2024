@@ -1,0 +1,17 @@
+﻿@model proiect.Models.Film
+
+<h1>Adăugare Film Nou</h1>
+
+<form asp-action="Create" method="post">
+    <!-- Afișează aici câmpurile pentru adăugarea unui film nou, folosind Tag Helpers -->
+    <div class="form-group">
+        <label for="Titlu">Titlu</label>
+        <input type="text" class="form-control" id="Titlu" name="Titlu" value="@Model.Titlu">
+    </div>
+
+    <!-- Alte câmpuri ale filmului -->
+
+    <button type="submit" class="btn btn-primary">Salvare</button>
+</form>
+
+<a asp-action="Index">Înapoi la Listă</a>

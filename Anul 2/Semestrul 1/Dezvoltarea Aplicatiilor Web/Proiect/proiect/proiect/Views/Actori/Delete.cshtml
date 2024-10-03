@@ -1,0 +1,30 @@
+﻿@model proiect.Models.Actor // Asigurați-vă că utilizați corect modelul Actor
+
+@{
+    ViewData["Title"] = "Ștergere Actor";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h3>Sunteți sigur că doriți să ștergeți acest actor?</h3>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Nume Actor:
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NumeActor)
+        </dd>
+
+        <!-- Alte detalii despre actor pot fi afișate aici. -->
+    </dl>
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="IdActor" />
+    <div class="form-group">
+        <input type="submit" value="Șterge" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Anulează</a>
+    </div>
+</form>
