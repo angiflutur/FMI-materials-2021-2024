@@ -1,0 +1,1683 @@
+-- Exercitiul 10
+--CREARE------------------------------------------------------------------------
+
+------------------COMPANII------------------------------------------------------
+create table COMPANII
+(id_companie number(4) constraint companie_pk primary key,
+nume_companie varchar2(30) not null,
+data_infiintare date);
+
+------------------TRENURI-------------------------------------------------------
+create table TRENURI
+(id_tren number(10) constraint tren_pk primary key,
+id_companie number(4) not null,
+tip_tren varchar2(30) not null,
+nr_locuri number(3),
+constraint tren_companie_fk foreign key(id_companie)
+references COMPANII(id_companie));
+
+------------------GARI----------------------------------------------------------
+create table GARI
+(id_gara varchar2(3) constraint gara_pk primary key,
+nume_gara varchar2(50) not null,
+adresa varchar2(50) not null,
+nr_telefon_gara varchar2(10),
+email_gara varchar2(30));
+
+------------------CONDUCTORI----------------------------------------------------
+create table CONDUCTORI
+(id_conductor number(4) constraint conductor_pk primary key,
+id_gara varchar2(3),
+nume_conductor varchar2(30) not null,
+prenume_conductor varchar2(30) not null,
+nr_telefon_conductor varchar2(10),
+data_angajare date default sysdate,
+salariu number(6),
+constraint conductor_gara_fk foreign key(id_gara)
+references GARI(id_gara));
+
+------------------CONTROLORI----------------------------------------------------
+create table CONTROLORI
+(id_controlor number(4) constraint controlor_pk primary key,
+id_gara varchar2(3),
+nume_controlor varchar2(30) not null,
+prenume_controlor varchar2(30) not null,
+nr_telefon_controlor varchar2(10),
+data_angajare date default sysdate,
+salariu number(6),
+constraint controlor_gara_fk foreign key(id_gara)
+references GARI(id_gara));
+
+------------------CALATORII-----------------------------------------------------
+create table CALATORII
+(id_calatorie number(6) constraint calatorie_pk primary key,
+id_gara_plecare varchar2(3) not null,
+id_gara_sosire varchar2(3) not null,
+id_conductor_1 number(4) not null,
+id_conductor_2 number(4) not null,
+id_tren number(10) not null,
+data_plecare date,
+data_sosire date,
+constraint calatorie_gara_fk1 foreign key(id_gara_plecare)
+references GARI(id_gara),
+
+constraint calatorie_gara_fk2 foreign key(id_gara_sosire)
+references GARI(id_gara),
+
+constraint calatorie_conductor_fk1 foreign key(id_conductor_1)
+references CONDUCTORI(id_conductor),
+
+constraint calatorie_conductor_fk2 foreign key(id_conductor_2)
+references CONDUCTORI(id_conductor),
+
+constraint check_data CHECK(data_plecare < data_sosire),
+
+constraint check_gari CHECK(id_gara_plecare != id_gara_sosire),
+
+constraint check_conductori CHECK(id_conductor_1 != id_conductor_2));
+-- adaugam cheia externa "id_tren" in CALATORII
+alter table CALATORII
+add constraint calatorie_tren_fk foreign key(id_tren)
+references TRENURI(id_tren);
+
+------------------CLASE---------------------------------------------------------
+create table CLASE
+(id_clasa number(3) constraint clasa_pk primary key,
+nume_clasa varchar2(15) not null,
+pret_aditional number(3));
+
+------------------PASAGERI------------------------------------------------------
+create table PASAGERI
+(id_pasager number(5) constraint pasager_pk primary key,
+nume_pasager varchar2(30) not null,
+prenume_pasager varchar2(30) not null,
+email_pasager varchar2(30),
+nr_telefon_pasager varchar2(10));
+
+------------------ORASE---------------------------------------------------------
+create table ORASE
+(id_oras varchar2(6) constraint oras_pk primary key,
+id_gara varchar2(3),
+id_regiune varchar2(3),--cheie ext din GARI
+nume_oras varchar2(15) not null);
+
+------------------REGIUNI-------------------------------------------------------
+create table REGIUNI
+(id_regiune varchar2(3) constraint regiune_pk primary key,
+nume_regiune varchar2(15) not null,
+nr_gari number(2));
+
+------------------TRENURI_AU_CLASE----------------------------------------------
+create table TRENURI_AU_CLASE
+(id_tren number(10),
+id_clasa number(3),
+nr_locuri number(3),
+constraint trenuri_au_clase_tren_fk foreign key(id_tren)
+references TRENURI(id_tren),
+constraint trenuri_au_clase_clasa_fk foreign key(id_clasa)
+references CLASE(id_clasa),
+constraint trenuri_au_clase_pk primary key(id_tren, id_clasa));
+
+------------------REZERVA-------------------------------------------------------
+create table REZERVA
+(id_clasa number(3),
+id_pasager number(5),
+id_calatorie number(6),
+pret_bilet number(4),
+id_rezervare number(5),
+constraint rezerva_clasa_fk foreign key(id_clasa)
+references CLASE(id_clasa),
+constraint rezerva_pasager_fk foreign key(id_pasager)
+references PASAGERI(id_pasager),
+constraint rezerva_calatorie_fk foreign key(id_calatorie)
+references CALATORII(id_calatorie),
+constraint rezerva_pk primary key(id_clasa, id_calatorie, id_pasager,
+id_rezervare));
+
+------------------ASIGURA-------------------------------------------------------
+create table ASIGURA
+(id_controlor number(4),
+id_calatorie number(6),
+constraint asigura_controlor_fk foreign key(id_controlor)
+references CONTROLORI(id_controlor),
+constraint asigura_calatorie_fk foreign key(id_calatorie)
+references CALATORII(id_calatorie),
+constraint asigura_pk primary key(id_controlor, id_calatorie));
+
+
+
+--INSERARE----------------------------------------------------------------------
+
+------------------1.COMPANII----------------------------------------------------
+insert into COMPANII
+values(111, 'Transferoviar Calatori', to_date('05/05/2012', 'DD/MM/YYYY'));
+
+insert into COMPANII
+values(112, 'Interregional Calatori', null);
+
+insert into COMPANII
+values(113, 'Astra Trans Carpatic', to_date('27/02/2014', 'DD/MM/YYYY'));
+
+insert into COMPANII
+values(114, 'Regio Calatori', to_date('19/08/2004', 'DD/MM/YYYY'));
+
+insert into COMPANII
+values(115, 'CFR Calatori', to_date('07/07/1880', 'DD/MM/YYYY'));
+
+commit;
+select * from COMPANII;
+
+------------------2.CLASE-------------------------------------------------------
+insert into CLASE
+values(10, 'Clasa I', 150);
+insert into CLASE
+values(20, 'Clasa a II-a', 75);
+rollback;
+insert into CLASE
+values(30, 'Clasa a III-a', 0);
+
+commit;
+select * from CLASE;
+
+------------------3.PASAGERI----------------------------------------------------
+
+insert into PASAGERI values
+(1, 
+'Chirita', 
+'Daria', 
+'daria.chirita@gmail.com', 
+'0745872911');
+
+insert into PASAGERI values
+(2, 
+'Calin', 
+'Mara', 
+'mara.calin@gmail.com', 
+'0744506907');
+
+insert into PASAGERI values
+(3, 
+'Manole', 
+'Valentin', 
+'valentin.manole@gmail.com', 
+'0742650812');
+
+insert into PASAGERI values
+(4, 
+'Mihailescu', 
+'George', 
+'george.mihailescu@gmail.com', 
+'0744752879');
+
+insert into PASAGERI values
+(5, 
+'Draghici', 
+'Horia', 
+null, 
+'0721600600');
+
+insert into PASAGERI values
+(6, 
+'Marin', 
+'Larisa', 
+'larisa.marin@gmail.com', 
+'0740040177');
+
+insert into PASAGERI values
+(7, 
+'Mocanu', 
+'Bogdan', 
+'bogdan.mocanu@gmail.com', 
+'0728591146');
+
+insert into PASAGERI values
+(8, 
+'Florescu', 
+'Stefan', 
+'stefan.florescu@gmail.com', 
+'0745658672');
+
+insert into PASAGERI values
+(9, 
+'Teodorescu', 
+'Adelina', 
+'adelina.teodorescu@gmail.com', 
+'0743974199');
+rollback;
+
+insert into PASAGERI values
+(10, 
+'Iancu', 
+'Carmen', 
+null, 
+'0742560919');
+rollback;
+
+insert into PASAGERI values
+(11, 
+'Neacsu', 
+'Ovidiu', 
+'ovidiu.neacsu@gmail.com', 
+'0723576710');
+rollback;
+
+insert into PASAGERI values
+(12, 
+'Negoita', 
+'Emanuel', 
+null, 
+'0745521199');
+
+insert into PASAGERI values
+(13, 
+'Popa', 
+'Robert', 
+'robert.popa@gmail.com', 
+'0723237182');
+
+insert into PASAGERI values
+(14, 
+'Diaconu', 
+'Sofia', 
+'sofia.diaconu@gmail.com', 
+'0729167076');
+
+insert into PASAGERI values
+(15, 
+'Dragan', 
+'Elvira', 
+'elvira.dragan@gmail.com', 
+'0745652318');
+
+commit;
+rollback;
+select * from pasageri;
+
+------------------4.REGIUNI-----------------------------------------------------
+insert into REGIUNI values
+('TRA', 'Transilvania', 3);
+
+insert into REGIUNI values
+('MUN', 'Muntenia', 5);
+
+insert into REGIUNI values
+('MOL', 'Moldova', 3);
+
+insert into REGIUNI values
+('OLT', 'Oltenia', 2);
+
+insert into REGIUNI values
+('DOB', 'Dobrogea', 2);
+
+insert into REGIUNI values
+('BAN', 'Banat', 2);
+
+insert into REGIUNI values
+('CRI', 'Crisana', 2);
+
+insert into REGIUNI values
+('BUC', 'Bucovina', 2);
+
+insert into REGIUNI values
+('MAR', 'Maramures', 2);
+
+commit;
+select * from regiuni;
+
+------------------5.GARI--------------------------------------------------------
+
+insert into GARI values
+('CJ',
+'Gara Cluj-Napoca',
+'str. Piata Garii, nr. 1-3',
+'0264433647',
+null);
+
+insert into GARI values
+('BV',
+'Gara Brasov',
+'Bulevardul Garii 1A',
+'0268410233',
+'gara.brasov@gmail.com');
+
+insert into GARI values
+('SIB',
+'Gara Sibiu',
+'str. Piata 1 Decembrie, nr. 6',
+'0269211139',
+'gara.sibiu@gmail.com');
+
+insert into GARI values
+('ARG',
+'Gara Curtea de Arges',
+'str. 1 Mai, nr. 4',
+'726525',
+null);
+
+insert into GARI values
+('BR',
+'Gara Braila',
+'str. General Eremia Grigorescu, nr. 1',
+'0731990864',
+'gara.braila@gmail.com');
+
+insert into GARI values
+('PH',
+'Gara Brazi',
+'Brazii de Sus',
+null,
+null);
+
+insert into GARI values
+('GIU',
+'Gara Giurgiu',
+'str. Garii, nr. 1',
+'0246211098',
+null);
+
+insert into GARI values
+('BUC',
+'Gara de Nord Bucuresti',
+'str. Piata Garii de Nord, nr. 1',
+'0219521',
+'gara_nord_bucuresti@gmail.com');
+
+insert into GARI values
+('IAS',
+'Gara Iasi',
+'str. Garii, nr. 1',
+null,
+null);
+
+insert into GARI values
+('GL',
+'Gara Galati',
+'str. Garii, nr. 1',
+'0236460643',
+'gara_galati@gmail.com');
+
+insert into GARI values
+('VS',
+'Gara Vaslui',
+'str. Garii',
+'0734737485',
+'gara.vaslui@gmail.com');
+
+insert into GARI values
+('GJ',
+'Gara Targu Jiu',
+'str. Republicii, nr. 1',
+'0731990321',
+null);
+
+insert into GARI values
+('MEH',
+'Gara Drobeta Turnu Severin',
+'str. Dunarii, nr. 2',
+'0725504458',
+null);
+
+insert into GARI values
+('TUL',
+'Gara Tulcea',
+'str. Portului',
+'0733520161',
+null);
+
+insert into GARI values
+('CON',
+'Gara Constanta',
+'str. Piata Victoriei, nr. 1',
+'0721952000',
+null);
+
+insert into GARI values
+('TIM', 
+'Gara Timisoara Nord', 
+'str. Garii, nr.2', 
+'0256493806', 
+null);
+
+insert into GARI values
+('CS',
+'Gara Caransebes',
+'Calea Timisoarei',
+null,
+null);
+
+insert into GARI values
+('BH',
+'Episcopia Bihor',
+'Stara Vamii',
+'0259444953',
+null);
+
+insert into GARI values
+('AR',
+'Gara Arad',
+'str. Piata Garii, nr. 8-9',
+'0257231777',
+null);
+
+insert into GARI values
+('SUC',
+'Gara Suceava',
+'str. Nicolae Iorga, nr. 7',
+null,
+null);
+
+insert into GARI values
+('BOT',
+'Gara Botosani',
+'str. Garii, nr. 1',
+null,
+null);
+
+insert into GARI values
+('SM',
+'Gara Satu Mare',
+'str. Grivita, nr. 1',
+null,
+'gara_satumare@gmail.com');
+
+insert into GARI values
+('MM',
+'Gara Sighetul Marmatiei',
+'str. Piata Garii, nr. 2',
+'0262310952',
+null);
+commit;
+select * from GARI;
+
+------------------6.ORASE-------------------------------------------------------
+insert into ORASE values
+('CJ',
+'CJ',
+'TRA',
+'Cluj-Napoca');
+
+insert into ORASE values
+('BV',
+'BV',
+'TRA',
+'Brasov');
+
+insert into ORASE values
+('SB',
+'SIB',
+'TRA',
+'Sibiu');
+
+insert into ORASE values
+('AG',
+'ARG',
+'MUN',
+'Arges');
+
+insert into ORASE values
+('BR',
+'BR',
+'MUN',
+'Braila');
+
+insert into ORASE values
+('PH',
+'PH',
+'MUN',
+'Prahova');
+
+insert into ORASE values
+('GR',
+'GIU',
+'MUN',
+'Giurgiu');
+
+insert into ORASE values
+('B',
+'BUC',
+'MUN',
+'Bucuresti');
+
+insert into ORASE values
+('IS',
+'IAS',
+'MOL',
+'Iasi');
+
+insert into ORASE values
+('GL',
+'GL',
+'MOL',
+'Galati');
+
+insert into ORASE values
+('VS',
+'VS',
+'MOL',
+'Vaslui');
+
+insert into ORASE values
+('GJ',
+'GJ',
+'OLT',
+'Targu Jiu');
+
+insert into ORASE values
+('MH',
+'MEH',
+'OLT',
+'Mehedinti');
+
+insert into orase values
+('TL',
+'TUL',
+'DOB',
+'Tulcea');
+
+insert into orase values
+('CT',
+'CON',
+'DOB',
+'Constanta');
+
+insert into orase values
+('TM',
+'TIM',
+'BAN',
+'Timis');
+
+insert into orase values
+('CS',
+'CS',
+'BAN',
+'Caras-Severin');
+
+insert into orase values
+('BH',
+'BH',
+'CRI',
+'Bihor');
+
+insert into orase values
+('AR',
+'AR',
+'CRI',
+'Arad');
+
+insert into orase values
+('SV',
+'SUC',
+'BUC',
+'Suceava');
+
+insert into orase values
+('BT',
+'BOT',
+'BUC',
+'Botosani');
+
+insert into orase values
+('SM',
+'SM',
+'MAR',
+'Satu Mare');
+
+insert into orase values
+('MM',
+'MM',
+'MAR',
+'Maramures');
+commit;
+select * from orase;
+
+------------------7.TRENURI--------------------------------------------------
+insert into trenuri values
+(1665,
+115,
+'calatori',
+400);
+
+insert into trenuri values
+(1753,
+115,
+'calatori',
+350);
+
+insert into trenuri values
+(2075,
+115,
+'calatori',
+350);
+
+insert into trenuri values
+(4504,
+115,
+'calatori',
+400);
+
+insert into trenuri values
+(5409,
+115,
+'calatori',
+300);
+
+insert into trenuri values
+(5414,
+115,
+'calatori',
+250);
+
+insert into trenuri values
+(10038,
+115,
+'calatori',
+450);
+
+insert into trenuri values
+(10332,
+115,
+'calatori',
+300);
+
+insert into trenuri values
+(10506,
+115,
+'calatori',
+200);
+
+insert into trenuri values
+(10565,
+115,
+'calatori',
+400);
+
+insert into trenuri values
+(10606,
+115,
+'calatori',
+350);
+
+insert into trenuri values
+(10619,
+115,
+'calatori',
+500);
+
+insert into trenuri values
+(10620,
+115,
+'calatori',
+420);
+
+insert into trenuri values
+(10632,
+115,
+'calatori',
+200);
+
+insert into trenuri values
+(11445,
+115,
+'calatori',
+500);
+
+insert into trenuri values
+(11430,
+114,
+'regional',
+250); --iasi->galati
+
+insert into trenuri values--maramures->satu mare
+(10676,
+112,
+'regional',
+300);
+
+insert into trenuri values --galati->bucuresti
+(10071,
+111,
+'calatori',
+450);
+
+insert into trenuri values --bucuresti->arad
+(1023,
+113,
+'calatori',
+400);
+
+insert into trenuri values --bucuresti->timis
+(1024,
+113,
+'calatori',
+500);
+
+select * from trenuri;
+commit;
+------------------8.CONDUCTORI--------------------------------------------------
+insert into conductori values
+(1,
+'BUC',
+'Muresan',
+'George',
+'0745025107',
+to_date('20/06/2010', 'DD/MM/YYYY'),
+8000);
+
+insert into conductori values
+(2,
+'BUC',
+'Manole',
+'Horia',
+'0788017388',
+to_date('15/05/2012', 'DD/MM/YYYY'),
+6000);
+
+insert into conductori values
+(3,
+'GL',
+'Petrescu',
+'Ovidiu',
+'0743236333',
+to_date('29/07/2014', 'DD/MM/YYYY'),
+6000);
+
+insert into conductori values
+(4,
+'GL',
+'Dobre',
+'Adrian',
+'0769233998',
+to_date('21/09/2013', 'DD/MM/YYYY'),
+9000);
+
+insert into conductori values
+(5,
+'BUC',
+'Ursu',
+'Dorin',
+'0712102536',
+to_date('14/06/2011', 'DD/MM/YYYY'),
+7000);
+
+insert into conductori values
+(6,
+'BUC',
+'Pop',
+'Emilian',
+'0765267619',
+to_date('10/10/2020', 'DD/MM/YYYY'),
+5000);
+
+insert into conductori values
+(7,
+'MM',
+'Dragomir',
+'Catalin',
+'0730574905',
+to_date('08/08/2008', 'DD/MM/YYYY'),
+9000);
+
+insert into conductori values
+(8,
+'MM',
+'Tudor',
+'Gabriel',
+'074593045',
+to_date('01/02/2015', 'DD/MM/YYYY'),
+8500);
+
+insert into conductori values
+(9,
+'SIB',
+'Matei',
+'Ovidiu',
+'0748583255',
+to_date('07/04/2016', 'DD/MM/YYYY'),
+9500);
+
+insert into conductori values
+(10,
+'SIB',
+'Munteanu',
+'Nicolae',
+'0743211406',
+to_date('09/05/2017', 'DD/MM/YYYY'),
+7500);
+
+insert into conductori values
+(11,
+'IAS',
+'Petrescu',
+'Lucian',
+'0741255355',
+to_date('16/05/2013', 'DD/MM/YYYY'),
+9500);
+
+insert into conductori values
+(12,
+'IAS',
+'Tomescu',
+'Robert',
+'0740515665',
+to_date('17/09/2009', 'DD/MM/YYYY'),
+10000);
+
+insert into conductori values
+(13,
+'GJ',
+'Calinescu',
+'Laurentiu',
+'0747460006',
+to_date('16/11/2010', 'DD/MM/YYYY'),
+10000);
+
+insert into conductori values
+(14,
+'GJ',
+'Ifrim',
+'Victori',
+'0741418717',
+to_date('12/12/2012', 'DD/MM/YYYY'),
+9000);
+
+insert into conductori values
+(15,
+'SM',
+'Stoica',
+'Sergiu',
+'0744716322',
+to_date('18/03/2019', 'DD/MM/YYYY'),
+6000);
+
+insert into conductori values
+(16,
+'SM',
+'Cristea',
+'Madalin',
+'0742404100',
+to_date('09/07/2019', 'DD/MM/YYYY'),
+5000);
+
+insert into conductori values
+(17,
+'BOT',
+'Dinu',
+'Victor',
+'0744740008',
+to_date('14/03/2018', 'DD/MM/YYYY'),
+7000);
+
+insert into conductori values
+(18,
+'BOT',
+'Lupu',
+'Aurelian',
+'0742704643',
+to_date('10/05/2015', 'DD/MM/YYYY'),
+8000);
+
+insert into conductori values
+(19,
+'BH',
+'Munteanu',
+'Andrei',
+'0745370298',
+to_date('12/07/2012', 'DD/MM/YYYY'),
+5000);
+
+insert into conductori values
+(20,
+'BH',
+'Iancu',
+'Andrei',
+'0742555155',
+to_date('02/07/2014', 'DD/MM/YYYY'),
+8000);
+
+insert into conductori values
+(21,
+'MM',
+'Constantinescu',
+'Robert',
+'0748713445',
+to_date('03/08/2012', 'DD/MM/YYYY'),
+7000);
+
+insert into conductori values
+(22,
+'MM',
+'Pop',
+'Daniel',
+'0741853581',
+to_date('09/04/2011', 'DD/MM/YYYY'),
+8000);
+
+insert into conductori values
+(23,
+'ARG',
+'Nita',
+'Anton',
+'0744326974',
+to_date('09/04/2011', 'DD/MM/YYYY'),
+7000);
+
+insert into conductori values
+(24,
+'ARG',
+'Georgescu',
+'Valeriu',
+'0746411832',
+to_date('17/06/2020', 'DD/MM/YYYY'),
+8000);
+
+insert into conductori values
+(25,
+'GL',
+'Ionescu',
+'Alexandru',
+'0745252552',
+to_date('09/05/2015', 'DD/MM/YYYY'),
+7000);
+
+insert into conductori values
+(26,
+'GL',
+'Munteanu',
+'Florin',
+'0741437593',
+to_date('01/06/2012', 'DD/MM/YYYY'),
+10000);
+
+insert into conductori values
+(27,
+'CS',
+'Rusu',
+'Madalin',
+'0749242120',
+to_date('18/06/2014', 'DD/MM/YYYY'),
+10000);
+
+insert into conductori values
+(28,
+'CS',
+'Rusu',
+'Madalin',
+'0744588550',
+to_date('18/06/2014', 'DD/MM/YYYY'),
+9000);
+
+insert into conductori values
+(29,
+'CON',
+'Tomescu',
+'Valeriu',
+'0741705921',
+to_date('14/07/2016', 'DD/MM/YYYY'),
+9500);
+
+insert into conductori values
+(30,
+'CON',
+'Tomescu',
+'Valeriu',
+'0749093200',
+to_date('11/07/2014', 'DD/MM/YYYY'),
+8500);
+commit;
+select * from conductori;
+------------------9.CALATORII---------------------------------------------------
+insert into calatorii values
+(101,
+'BUC',
+'TIM',
+1,
+2,
+1024,
+to_date('20/06/2022', 'DD/MM/YYYY'),
+to_date('21/06/2022', 'DD/MM/YYYY'));
+
+insert into calatorii values
+(102,
+'BUC',
+'AR',
+3,
+4,
+1023,
+to_date('24/06/2022', 'DD/MM/YYYY'),
+to_date('25/06/2022', 'DD/MM/YYYY'));
+
+insert into calatorii values
+(103,
+'GL',
+'BUC',
+5,
+6,
+10071,
+to_date('19/08/2022', 'DD/MM/YYYY'),
+to_date('20/08/2022', 'DD/MM/YYYY'));
+
+insert into calatorii values
+(104,
+'MM',
+'SM',
+7,
+8,
+10676,
+to_date('05/07/2022', 'DD/MM/YYYY'),
+to_date('06/07/2022', 'DD/MM/YYYY'));
+
+insert into calatorii values
+(105,
+'SIB',
+'ARG',
+9,
+10,
+1665,
+to_date('21/06/2022', 'DD/MM/YYYY'),
+to_date('22/06/2022', 'DD/MM/YYYY'));
+
+insert into calatorii values
+(106,
+'IAS',
+'CJ',
+11,
+12,
+1753,
+to_date('21/06/2022', 'DD/MM/YYYY'),
+to_date('22/06/2022', 'DD/MM/YYYY'));
+
+insert into calatorii values
+(107,
+'GJ',
+'SUC',
+13,
+14,
+2075,
+to_date('21/06/2022', 'DD/MM/YYYY'),
+to_date('22/06/2022', 'DD/MM/YYYY'));
+
+insert into calatorii values
+(108,
+'SM',
+'MEH',
+15,
+16,
+4504,
+to_date('21/06/2022', 'DD/MM/YYYY'),
+to_date('22/06/2022', 'DD/MM/YYYY'));
+
+insert into calatorii values
+(109,
+'BOT',
+'GIU',
+17,
+18,
+5409,
+to_date('21/06/2022', 'DD/MM/YYYY'),
+to_date('22/06/2022', 'DD/MM/YYYY'));
+
+insert into calatorii values
+(110,
+'BH',
+'VS',
+19,
+20,
+5414,
+to_date('21/06/2022', 'DD/MM/YYYY'),
+to_date('22/06/2022', 'DD/MM/YYYY'));
+
+insert into calatorii values
+(111,
+'MM',
+'BV',
+21,
+22,
+10038,
+to_date('22/06/2022', 'DD/MM/YYYY'),
+to_date('23/06/2022', 'DD/MM/YYYY'));
+
+insert into calatorii values
+(112,
+'ARG',
+'AR',
+23,
+24,
+10332,
+to_date('23/06/2022', 'DD/MM/YYYY'),
+to_date('24/06/2022', 'DD/MM/YYYY'));
+
+insert into calatorii values
+(113,
+'GL',
+'SIB',
+25,
+26,
+10506,
+to_date('23/06/2022', 'DD/MM/YYYY'),
+to_date('24/06/2022', 'DD/MM/YYYY'));
+
+insert into calatorii values
+(114,
+'CS',
+'GJ',
+27,
+28,
+10565,
+to_date('24/06/2022', 'DD/MM/YYYY'),
+to_date('25/06/2022', 'DD/MM/YYYY'));
+
+insert into calatorii values
+(115,
+'CON',
+'BUC',
+29,
+30,
+10606,
+to_date('24/06/2022', 'DD/MM/YYYY'),
+to_date('25/06/2022', 'DD/MM/YYYY'));
+
+commit;
+select * from calatorii;
+
+------------------10.CONTROLORI-------------------------------------------------
+insert into controlori values
+(1,
+'BUC',
+'Dobre',
+'Dragos',
+'0746490819',
+to_date('25/06/2012', 'DD/MM/YYYY'),
+2500);
+
+insert into controlori values
+(2,
+'BUC',
+'Ghita',
+'Anton',
+'0744481304',
+to_date('27/09/2010', 'DD/MM/YYYY'),
+3500);
+
+insert into controlori values
+(3,
+'GL',
+'Ciobanu',
+'Bogdan',
+'0747212972',
+to_date('19/03/2018', 'DD/MM/YYYY'),
+2900);
+
+insert into controlori values
+(4,
+'MM',
+'Barbu',
+'Iulian',
+'0742426043',
+to_date('12/05/2020', 'DD/MM/YYYY'),
+3000);
+
+insert into controlori values
+(5,
+'SIB',
+'Stan',
+'Victor',
+'0744332255',
+to_date('12/05/2020', 'DD/MM/YYYY'),
+3000);
+
+insert into controlori values
+(6,
+'IAS',
+'Stan',
+'Victor',
+'0744206374',
+to_date('16/04/2021', 'DD/MM/YYYY'),
+2500);
+
+insert into controlori values
+(7,
+'GJ',
+'Cristea',
+'Dorin',
+'0742270344',
+to_date('16/09/2018', 'DD/MM/YYYY'),
+3500);
+
+insert into controlori values
+(8,
+'SM',
+'Tamas',
+'Lucian',
+'0740055906',
+to_date('11/11/2020', 'DD/MM/YYYY'),
+1500);
+
+insert into controlori values
+(9,
+'BOT',
+'Moisescu',
+'Sergiu',
+'0743501993',
+to_date('02/11/2019', 'DD/MM/YYYY'),
+5500);
+
+insert into controlori values
+(10,
+'BH',
+'Pop',
+'Paul',
+'0744334617',
+to_date('07/12/2017', 'DD/MM/YYYY'),
+6500);
+
+insert into controlori values
+(11,
+'MM',
+'Negoita',
+'Eugen',
+'0743992155',
+to_date('01/03/2017', 'DD/MM/YYYY'),
+4500);
+
+insert into controlori values
+(12,
+'ARG',
+'Marin',
+'Aurelian',
+'0749467324',
+to_date('07/07/2015', 'DD/MM/YYYY'),
+6500);
+
+insert into controlori values
+(13,
+'GL',
+'Dinescu',
+'Cosmin',
+'0746743912',
+to_date('01/08/2016', 'DD/MM/YYYY'),
+5000);
+
+insert into controlori values
+(14,
+'CS',
+'Ionita',
+'Victor',
+'0747764981',
+to_date('01/09/2013', 'DD/MM/YYYY'),
+4000);
+
+insert into controlori values
+(15,
+'CON',
+'Nita',
+'Dragos',
+'0746622745',
+to_date('07/07/2017', 'DD/MM/YYYY'),
+5000);
+commit;
+select * from controlori;
+
+------------------11.TRENURI_AU_CLASE-------------------------------------------
+insert into trenuri_au_clase values
+(1024,
+10,
+250);
+insert into trenuri_au_clase values
+(1024,
+20,
+150);
+insert into trenuri_au_clase values
+(1024,
+30,
+50);
+
+insert into trenuri_au_clase values
+(1023,
+10,
+50);
+insert into trenuri_au_clase values
+(1023,
+20,
+150);
+insert into trenuri_au_clase values
+(1023,
+30,
+200);
+
+insert into trenuri_au_clase values
+(10071,
+10,
+50);
+insert into trenuri_au_clase values
+(10071,
+20,
+200);
+insert into trenuri_au_clase values
+(10071,
+30,
+200);
+
+insert into trenuri_au_clase values
+(10676,
+10,
+50);
+insert into trenuri_au_clase values
+(10676,
+20,
+50);
+insert into trenuri_au_clase values
+(10676,
+30,
+200);
+
+insert into trenuri_au_clase values
+(1665,
+10,
+50);
+insert into trenuri_au_clase values
+(1665,
+20,
+150);
+insert into trenuri_au_clase values
+(1665,
+30,
+200);
+
+
+insert into trenuri_au_clase values
+(1753,
+10,
+50);
+insert into trenuri_au_clase values
+(1753,
+20,
+100);
+insert into trenuri_au_clase values
+(1753,
+30,
+200);
+
+
+insert into trenuri_au_clase values
+(2075,
+10,
+50);
+insert into trenuri_au_clase values
+(2075,
+20,
+100);
+insert into trenuri_au_clase values
+(2075,
+30,
+200);
+
+
+insert into trenuri_au_clase values
+(4504,
+10,
+100);
+insert into trenuri_au_clase values
+(4504,
+20,
+100);
+insert into trenuri_au_clase values
+(4504,
+30,
+200);
+
+
+insert into trenuri_au_clase values
+(5409,
+10,
+50);
+insert into trenuri_au_clase values
+(5409,
+20,
+100);
+insert into trenuri_au_clase values
+(5409,
+30,
+150);
+
+
+insert into trenuri_au_clase values
+(5414,
+10,
+50);
+insert into trenuri_au_clase values
+(5414,
+20,
+100);
+insert into trenuri_au_clase values
+(5414,
+30,
+100);
+
+
+insert into trenuri_au_clase values
+(10038,
+10,
+100);
+insert into trenuri_au_clase values
+(10038,
+20,
+150);
+insert into trenuri_au_clase values
+(10038,
+30,
+200);
+
+
+insert into trenuri_au_clase values
+(10332,
+10,
+100);
+insert into trenuri_au_clase values
+(10332,
+20,
+100);
+insert into trenuri_au_clase values
+(10332,
+30,
+100);
+
+
+insert into trenuri_au_clase values
+(10506,
+10,
+50);
+insert into trenuri_au_clase values
+(10506,
+20,
+50);
+insert into trenuri_au_clase values
+(10506,
+30,
+100);
+
+
+insert into trenuri_au_clase values
+(10565,
+10,
+50);
+insert into trenuri_au_clase values
+(10565,
+20,
+150);
+insert into trenuri_au_clase values
+(10565,
+30,
+200);
+
+
+insert into trenuri_au_clase values
+(10606,
+10,
+50);
+insert into trenuri_au_clase values
+(10606,
+20,
+100);
+insert into trenuri_au_clase values
+(10606,
+30,
+200);
+select * from trenuri_au_clase;
+
+commit;
+
+------------------12.REZERVA----------------------------------------------------
+insert into rezerva values
+(10,
+1,
+101,
+250,
+1001);
+
+insert into rezerva values
+(20,
+2,
+102,
+150,
+1002);
+
+insert into rezerva values
+(30,
+3,
+103,
+100,
+1003);
+
+insert into rezerva values
+(10,
+4,
+104,
+175,
+1004);
+
+insert into rezerva values
+(10,
+5,
+105,
+190,
+1005);
+
+insert into rezerva values
+(20,
+6,
+106,
+165,
+1006);
+
+insert into rezerva values
+(30,
+7,
+107,
+165,
+1007);
+
+insert into rezerva values
+(20,
+8,
+108,
+180,
+1008);
+
+insert into rezerva values
+(20,
+9,
+109,
+200,
+1009);
+
+insert into rezerva values
+(10,
+10,
+110,
+220,
+1010);
+
+insert into rezerva values
+(10,
+11,
+111,
+300,
+1011);
+
+insert into rezerva values
+(20,
+12,
+112,
+200,
+1012);
+
+insert into rezerva values
+(30,
+13,
+113,
+120,
+1013);
+
+insert into rezerva values
+(20,
+14,
+114,
+180,
+1014);
+
+insert into rezerva values
+(20,
+15,
+115,
+175,
+1015);
+commit;
+select * from rezerva;
+
+------------------13.ASIGURA----------------------------------------------------
+insert into asigura values
+(1, 101);
+
+insert into asigura values
+(2, 102);
+
+insert into asigura values
+(3, 103);
+
+insert into asigura values
+(4, 104);
+
+insert into asigura values
+(5, 105);
+
+insert into asigura values
+(6, 106);
+
+insert into asigura values
+(7, 107);
+
+insert into asigura values
+(8, 108);
+
+insert into asigura values
+(9, 109);
+
+insert into asigura values
+(10, 110);
+
+insert into asigura values
+(11, 111);
+
+insert into asigura values
+(12, 112);
+
+insert into asigura values
+(13, 113);
+
+insert into asigura values
+(14, 114);
+
+insert into asigura values
+(15, 115);
+commit;
+select * from asigura;

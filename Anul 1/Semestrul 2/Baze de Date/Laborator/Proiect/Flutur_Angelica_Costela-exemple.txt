@@ -1,0 +1,225 @@
+-- Exercitiul 11----------------------------------------------------------------
+-- 11.1.
+--    Sa se afiseze numele si prenumele pasagerilor (pe aceeasi coloana) 
+-- care calatoresc in luna IUNIE, id-urile garilor de plecare si cea de sosire,
+-- precum si pretul total al biletului.
+-- Sa se ordoneze crescator in functie de data plecarii.
+
+select concat(p.nume_pasager,' ')||p.prenume_pasager as "Nume pasager",
+       c.id_gara_plecare, c.id_gara_sosire, c.data_plecare,
+       r.pret_bilet + NVL(cl.pret_aditional, 0) as "Pret total bilet"
+from pasageri p join rezerva r using (id_pasager) join 
+    calatorii c using (id_calatorie) join clase cl using(id_clasa)
+where extract(month from c.data_plecare) = 6
+order by c.data_plecare;
+-- functie pe siruri de caractere (CONCAT)
+-- functie pe date calendaristice (EXTRACT)
+-- JOIN pe 4 tabele
+-- filtrare la nivel de linii (luna = 6)
+-- ordonare crescatoare
+
+-- 11.2.
+--    Sa se afiseze numele, prenumele, salariul si data angajarii
+-- a persoanelor din judetul MUNTENIA care au fost angajate dupa anul 2011.
+with angajati as (
+   (select cnd.id_conductor as "ID_ANGAJAT", cnd.nume_conductor as "NUME", 
+   cnd.prenume_conductor as "PRENUME", cnd.salariu as "SALARIU", cnd.data_angajare as "DATA"
+   from conductori cnd join orase o on (cnd.id_gara = o.id_gara)
+   where cnd.id_gara in (select o.id_gara
+                         from orase o
+                         where initcap(id_regiune) = 'Mun'))
+    UNION
+   (select cnt.id_controlor as "ID_ANGAJAT", cnt.nume_controlor as "NUME", 
+    cnt.prenume_controlor as "PRENUME", cnt.salariu as "SALARIU", cnt.data_angajare as "DATA"
+    from controlori cnt join orase o on (cnt.id_gara = o.id_gara)
+    where cnt.id_gara in (select o.id_gara
+                          from orase o
+                          where initcap(id_regiune) = 'Mun')))
+select nume, prenume, salariu, data
+from angajati
+where extract(year from data) > 2011
+order by data;
+
+-- 1 bloc de cerere (clauza WITH)
+-- functie pe siruri de caractere (INITCAP)
+-- cerere nesincronizata pentru a selecta garile din Muntenia
+
+-- 11.3.
+--    Sa se afiseze conductorii care au salariul peste media tuturor angajatilor
+-- din acest domeniu.
+-- Se vor afisa numele concatenat cu prenumele, salariul si intr-o coloana
+-- cu numele STATUT ANGAJAT valorile "Experimentat", "Mediu" sau "Incepator".
+-- Persoanele angajate inainte de anul 2014 sunt considerate "Experimentat",
+-- cele intre 2014-2017 "Mediu", iar cele intre 2017-prezent "Incepator".
+select concat(cnd.nume_conductor,' ')||cnd.prenume_conductor 
+       as "Nume controlor", cnd.salariu,
+       cnd.data_angajare,
+CASE when extract(year from data_angajare) <=2014
+     then 'Experimentat'
+     
+     when extract(year from data_angajare) > 2014 and 
+          extract(year from data_angajare) <=2017 then 'Mediu'
+          
+     when extract(year from data_angajare) > 2017 and
+          data_angajare<= current_timestamp then 'Incepator'
+     else 'Nu se stie'
+END AS "STATUT"
+from conductori cnd
+where salariu > (select avg(salariu)
+                 from conductori)
+order by cnd.data_angajare;
+
+-- CASE
+-- functie pentru data calendaristica (CURRENT_TIMESTAMP)
+-- cerere sincronizata pentru salarii
+-- functie grup (AVG)
+-- filtrare la nivel de linii
+
+-- 11.4.
+--    Pentru fiecare gara sa se afiseze salariul maxim si minim.
+--  Se vor afisa numele garii, salariul minim si maxim.
+select nume_gara, max(salariu), min(salariu)
+from conductori join gari using (id_gara)
+group by id_gara, nume_gara;
+
+-- functii grup (min, max)
+-- filtrare la nivel de grupuri
+
+-- 11.5.
+--    Sa se afiseze numele si salariul conductorilor stiind ca:
+-- celor care lucreaza la Gara de Nord Bucuresti li s-a marit salariul cu 50%;
+-- celor care lucreaza la Gara Sighetul Marmatiei li s-a marit salariul cu 20%.
+select c.nume_conductor, c.prenume_conductor, c.salariu "Inainte de majorare",
+decode (c.id_gara, 'BUC', c.salariu + 0.5*salariu,
+                   'MM', c.salariu + 0.2*salariu) "Dupa majorare"
+from conductori c
+where lower(c.id_gara)='buc' or lower(c.id_gara)='mm';
+
+-- folosirea DECODE
+-- functie pentru siruri de caractere (LOWER)
+
+
+
+-- Exercitiul 12----------------------------------------------------------------
+
+-- 12.1.
+--      Sa se stearga trenurile care nu efectueaza nicio calatorie.
+delete from trenuri t
+where t.id_tren not in (select c.id_tren from calatorii c);
+select * from trenuri;
+rollback;
+
+-- 12.2.
+--      Sa se mareasca salariile controlorilor care au fost angajati inainte
+-- de anul 2017 cu 35%.
+update controlori
+set salariu = salariu + salariu*0.35
+where extract(year from data_angajare) <= 2017;
+
+select * from controlori;
+rollback;
+
+-- 12.3.
+--      Sa se modifice adresa de email a pasagerilor in dreptul carora apare 
+--  NULL, astfel incat sa aiba forma nume.prenume@yahoo.com.
+update pasageri
+set email_pasager = lower(nume_pasager)||'.'||prenume_pasager||'@yahoo.com'
+where email_pasager is null;
+
+select * from pasageri;
+rollback;
+
+-- Exercitiul 13----------------------------------------------------------------
+-- Secventa pentru incrementarea atributului ID_CALATORIE din tabelul CALATORII
+create sequence SEQ_CALATORII
+increment by 1
+start with 116
+maxvalue 9000
+nocycle;
+
+-- Secventa pentru incrementarea atributului ID_PASAGER din tabelul PASAGERI
+create sequence SEQ_PASAGERI
+increment by 1
+start with 16
+maxvalue 9000
+nocycle;
+
+-- Secventa pentru incrementarea atributului ID_CONTROLOR din tabelul CONTROLORI
+create sequence SEQ_CONTROLORI
+increment by 1
+start with 16
+maxvalue 9999
+nocycle;
+--Secventa pentru incrementarea atributului ID_CONDUCTORI din tabelul CONDUCTORI
+create sequence SEQ_CONDUCTORI
+increment by 1
+start with 31
+maxvalue 9999
+nocycle;
+
+-- Inserari cu ajutorul secventelor.
+insert into pasageri values
+(seq_pasageri.nextval,
+'Untea',
+'Mioara',
+'mioara.untea@gmail.com',
+'0739488644');
+
+insert into controlori values
+(seq_controlori.nextval,
+'BOT',
+'Boboc',
+'Vasile',
+'0744672946',
+to_date('05/10/2019', 'DD/MM/YYYY'),
+3000);
+select * from pasageri;
+rollback;
+
+
+-- Exercitiul 16----------------------------------------------------------------
+
+-- Prima cerere DIVISION
+--      Sa se afiseze numele si prenumele conductorilor
+-- care lucreaza la EXACT aceeasi gara cu conductorul care 
+-- are id-ul 4.
+select id_conductor, nume_conductor, prenume_conductor
+from conductori
+where id_gara IN (select c.id_gara
+                  from conductori c join orase o on(c.id_gara = o.id_gara)
+                  where c.id_conductor = 4)
+and id_conductor != 4
+group by id_conductor, nume_conductor, prenume_conductor
+having count(*) = (select count(id_gara)
+from conductori
+where id_conductor = 4)
+MINUS -- se elimina conductorii care nu sunt angajati la exact aceeasi gara
+select id_conductor, nume_conductor, prenume_conductor
+from conductori 
+where id_gara NOT IN (select c.id_gara
+                      from conductori c join orase o on(c.id_gara = o.id_gara)
+                      where c.id_conductor = 4);
+
+-- A doua cerere DIVISION
+--      Sa se afiseze conductorii care lucreaza la CEL PUTIN aceeasi gara la
+-- care lucreaza si conductorul care are id-ul 2.
+select id_conductor, nume_conductor, prenume_conductor
+from conductori
+where id_gara IN (select c.id_gara
+                  from conductori c join orase o on(c.id_gara = o.id_gara)
+                  where c.id_conductor = 2)
+and id_conductor != 2
+group by id_conductor, nume_conductor, prenume_conductor
+having count(*) = (select count(id_gara)
+from conductori
+where id_conductor = 2);
+
+--      Sa se afiseze conductorii pentru fiecare regiune alaturi de regiunea si
+-- gara la care lucreaza. Sa se ordoneze alfabetic dupa numele regiunii.
+
+select r.nume_regiune, cnd.nume_conductor, g.nume_gara
+from conductori cnd FULL OUTER JOIN gari g on (cnd.id_gara = g.id_gara)
+FULL OUTER JOIN orase o on (o.id_gara = g.id_gara)
+FULL OUTER JOIN regiuni r on (r.id_regiune = o.id_regiune)
+where id_conductor is not null
+order by r.nume_regiune, g.nume_gara;
