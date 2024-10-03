@@ -1,0 +1,25 @@
+# literele alfabetului
+Sigma:
+a
+b
+End
+# starile AFN-ului
+States:
+0, S
+1
+2
+3, F
+End
+# Tranzitiile suportate de AFN
+Transitions:
+0, a, 1
+0, a, 2
+0, b, 2
+1, a, 0
+1, b, 2
+1, b, 3
+2, a, 1
+2, b, 3
+3, a, 2
+3, b, 3
+End

@@ -1,0 +1,26 @@
+# literele alfabetului
+Sigma:
+a
+b
+End
+# starile AFD-ului
+States:
+0, S
+1
+2
+3, F
+4
+End
+# Tranzitiile suportate de AFD
+Transitions:
+0, a, 1
+0, b, 2
+1, a, 2
+1, b, 3
+2, a, 2
+2, b, 1
+3, a, 3
+3, b, 4
+4, a, 1
+4, b, 2
+End
